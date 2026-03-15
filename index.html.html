@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FamilyBook — Application Workflow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --color-text-primary: #18152B;
+    --color-text-secondary: #5F5980;
+    --color-border-tertiary: rgba(95,89,128,0.18);
+    --font-sans: 'Inter', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-text-primary: #EDE9FF;
+      --color-text-secondary: #A49DC0;
+      --color-border-tertiary: rgba(165,157,192,0.18);
+    }
+    body { background: #18152B; }
+    .card { background: #221E3A; border-color: rgba(165,157,192,0.15); }
+    footer { color: #5F5980; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: #F6F5FF;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 48px 24px 56px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.3px;
+  }
+  header p {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-top: 6px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid rgba(91,79,207,0.12);
+    box-shadow: 0 4px 24px rgba(91,79,207,0.09);
+    padding: 36px 32px;
+    max-width: 760px;
+    width: 100%;
+  }
+  svg text { font-family: var(--font-sans); }
+
+  /* Color ramps */
+  .c-gray rect, .c-gray polygon { fill: #F1EFE8; stroke: #5F5E5A; }
+  .c-gray text.th { fill: #444441; }
+  .c-gray text.ts { fill: #5F5E5A; }
+  .c-teal rect, .c-teal polygon { fill: #E1F5EE; stroke: #0F6E56; }
+  .c-teal text.th { fill: #085041; }
+  .c-teal text.ts { fill: #0F6E56; }
+  .c-purple rect, .c-purple polygon { fill: #EEEDFE; stroke: #534AB7; }
+  .c-purple text.th { fill: #3C3489; }
+  .c-purple text.ts { fill: #534AB7; }
+  .c-coral rect, .c-coral polygon { fill: #FAECE7; stroke: #993C1D; }
+  .c-coral text.th { fill: #712B13; }
+  .c-coral text.ts { fill: #993C1D; }
+
+  @media (prefers-color-scheme: dark) {
+    .c-gray rect, .c-gray polygon { fill: #444441; stroke: #B4B2A9; }
+    .c-gray text.th { fill: #F1EFE8; }
+    .c-gray text.ts { fill: #D3D1C7; }
+    .c-teal rect, .c-teal polygon { fill: #085041; stroke: #5DCAA5; }
+    .c-teal text.th { fill: #E1F5EE; }
+    .c-teal text.ts { fill: #9FE1CB; }
+    .c-purple rect, .c-purple polygon { fill: #3C3489; stroke: #AFA9EC; }
+    .c-purple text.th { fill: #EEEDFE; }
+    .c-purple text.ts { fill: #CECBF6; }
+    .c-coral rect, .c-coral polygon { fill: #712B13; stroke: #F0997B; }
+    .c-coral text.th { fill: #FAECE7; }
+    .c-coral text.ts { fill: #F5C4B3; }
+  }
+
+  text.th { font-size: 14px; font-weight: 500; fill: var(--color-text-primary); }
+  text.ts { font-size: 12px; font-weight: 400; fill: var(--color-text-secondary); }
+
+  .node { cursor: pointer; }
+  .node:hover rect, .node:hover polygon { opacity: 0.85; }
+
+  footer {
+    margin-top: 32px;
+    font-size: 12px;
+    color: #A49DC0;
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>FamilyBook — Application Workflow</h1>
+  <p>Mohini Sultana Mukta · 201-15-3183 · Daffodil International University</p>
+</header>
+
+<div class="card">
+<svg width="100%" viewBox="0 0 680 700">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<!-- START PILL -->
+<g class="c-gray">
+<rect x="260" y="28" width="160" height="44" rx="22" stroke-width="0.5"/>
+<text class="th" x="340" y="50" text-anchor="middle" dominant-baseline="central">App launch</text>
+</g>
+
+<!-- Arrow: start → diamond -->
+<line x1="340" y1="72" x2="340" y2="91" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- DECISION DIAMOND -->
+<g class="node c-gray">
+<polygon points="340,92 420,134 340,176 260,134" stroke-width="0.5"/>
+<text class="th" x="340" y="134" text-anchor="middle" dominant-baseline="central">First visit?</text>
+</g>
+
+<!-- Branch labels -->
+<text class="ts" x="248" y="122" text-anchor="end">Yes</text>
+<text class="ts" x="432" y="122" text-anchor="start">No</text>
+
+<!-- LEFT BRANCH PATH (Yes = new user) -->
+<path d="M 260 134 L 150 134 L 150 193" fill="none" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- ONBOARDING -->
+<g class="node c-teal">
+<rect x="74" y="194" width="152" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="150" y="212" text-anchor="middle" dominant-baseline="central">Onboarding</text>
+<text class="ts" x="150" y="234" text-anchor="middle" dominant-baseline="central">3 intro screens</text>
+</g>
+
+<line x1="150" y1="250" x2="150" y2="265" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- CREATE ACCOUNT -->
+<g class="node c-teal">
+<rect x="74" y="266" width="152" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="150" y="284" text-anchor="middle" dominant-baseline="central">Create account</text>
+<text class="ts" x="150" y="306" text-anchor="middle" dominant-baseline="central">Name, email, role</text>
+</g>
+
+<line x1="150" y1="322" x2="150" y2="337" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- CREATE FAMILY -->
+<g class="node c-teal">
+<rect x="74" y="338" width="152" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="150" y="356" text-anchor="middle" dominant-baseline="central">Create family</text>
+<text class="ts" x="150" y="378" text-anchor="middle" dominant-baseline="central">Invite members</text>
+</g>
+
+<!-- RIGHT BRANCH PATH (No = returning user) -->
+<path d="M 420 134 L 530 134 L 530 193" fill="none" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- SIGN IN -->
+<g class="node c-teal">
+<rect x="454" y="194" width="152" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="530" y="212" text-anchor="middle" dominant-baseline="central">Sign in</text>
+<text class="ts" x="530" y="234" text-anchor="middle" dominant-baseline="central">Email + password</text>
+</g>
+
+<!-- MERGE ROUTING LINES -->
+<path d="M 150 394 L 150 412 L 338 412" fill="none" stroke="#888780" stroke-width="1.5" opacity="0.45"/>
+<path d="M 530 250 L 530 412 L 342 412" fill="none" stroke="#888780" stroke-width="1.5" opacity="0.45"/>
+<circle cx="340" cy="412" r="3.5" fill="#888780" opacity="0.4"/>
+<line x1="340" y1="412" x2="340" y2="429" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- MAIN APP BAR -->
+<g class="node c-purple">
+<rect x="59" y="430" width="562" height="56" rx="14" stroke-width="0.5"/>
+<text class="th" x="340" y="448" text-anchor="middle" dominant-baseline="central">Main App</text>
+<text class="ts" x="340" y="470" text-anchor="middle" dominant-baseline="central">5-tab navigation hub</text>
+</g>
+
+<!-- ARROWS: main bar → tabs -->
+<line x1="112" y1="486" x2="112" y2="507" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="226" y1="486" x2="226" y2="507" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="486" x2="340" y2="507" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="454" y1="486" x2="454" y2="507" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="568" y1="486" x2="568" y2="507" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- TAB NODES -->
+<g class="node c-purple">
+<rect x="59" y="508" width="106" height="48" rx="8" stroke-width="0.5"/>
+<text class="th" x="112" y="532" text-anchor="middle" dominant-baseline="central">Home</text>
+</g>
+<g class="node c-purple">
+<rect x="173" y="508" width="106" height="48" rx="8" stroke-width="0.5"/>
+<text class="th" x="226" y="532" text-anchor="middle" dominant-baseline="central">Tree</text>
+</g>
+<g class="node c-purple">
+<rect x="287" y="508" width="106" height="48" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="532" text-anchor="middle" dominant-baseline="central">Events</text>
+</g>
+<g class="node c-purple">
+<rect x="401" y="508" width="106" height="48" rx="8" stroke-width="0.5"/>
+<text class="th" x="454" y="532" text-anchor="middle" dominant-baseline="central">Messages</text>
+</g>
+<g class="node c-purple">
+<rect x="515" y="508" width="106" height="48" rx="8" stroke-width="0.5"/>
+<text class="th" x="568" y="532" text-anchor="middle" dominant-baseline="central">Profile</text>
+</g>
+
+<!-- ARROWS: tabs → sub-features -->
+<line x1="112" y1="556" x2="112" y2="579" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="226" y1="556" x2="226" y2="579" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="556" x2="340" y2="579" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="454" y1="556" x2="454" y2="579" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="568" y1="556" x2="568" y2="579" stroke="#888780" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- SUB-FEATURE NODES -->
+<g class="node c-coral">
+<rect x="59" y="580" width="106" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="112" y="598" text-anchor="middle" dominant-baseline="central">Post</text>
+<text class="ts" x="112" y="620" text-anchor="middle" dominant-baseline="central">Share, react</text>
+</g>
+<g class="node c-coral">
+<rect x="173" y="580" width="106" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="226" y="598" text-anchor="middle" dominant-baseline="central">View tree</text>
+<text class="ts" x="226" y="620" text-anchor="middle" dominant-baseline="central">Add, invite</text>
+</g>
+<g class="node c-coral">
+<rect x="287" y="580" width="106" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="598" text-anchor="middle" dominant-baseline="central">New event</text>
+<text class="ts" x="340" y="620" text-anchor="middle" dominant-baseline="central">RSVP, albums</text>
+</g>
+<g class="node c-coral">
+<rect x="401" y="580" width="106" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="454" y="598" text-anchor="middle" dominant-baseline="central">Chat</text>
+<text class="ts" x="454" y="620" text-anchor="middle" dominant-baseline="central">Group, 1:1</text>
+</g>
+<g class="node c-coral">
+<rect x="515" y="580" width="106" height="56" rx="8" stroke-width="0.5"/>
+<text class="th" x="568" y="598" text-anchor="middle" dominant-baseline="central">Memories</text>
+<text class="ts" x="568" y="620" text-anchor="middle" dominant-baseline="central">Photos, docs</text>
+</g>
+
+<!-- LEGEND SEPARATOR -->
+<line x1="59" y1="652" x2="621" y2="652" stroke="#D3D1C7" stroke-width="0.5"/>
+
+<!-- LEGEND ITEMS -->
+<g class="c-gray"><rect x="59" y="661" width="10" height="10" rx="2" stroke-width="0.5"/></g>
+<text class="ts" x="75" y="666" dominant-baseline="central">Structural</text>
+<g class="c-teal"><rect x="180" y="661" width="10" height="10" rx="2" stroke-width="0.5"/></g>
+<text class="ts" x="196" y="666" dominant-baseline="central">Auth &amp; onboarding</text>
+<g class="c-purple"><rect x="348" y="661" width="10" height="10" rx="2" stroke-width="0.5"/></g>
+<text class="ts" x="364" y="666" dominant-baseline="central">Navigation</text>
+<g class="c-coral"><rect x="466" y="661" width="10" height="10" rx="2" stroke-width="0.5"/></g>
+<text class="ts" x="482" y="666" dominant-baseline="central">Core features</text>
+</svg>
+</div>
+
+<footer>
+  FamilyBook · Application Workflow Diagram<br/>
+  Mohini Sultana Mukta · Student ID: 201-15-3183 · Daffodil International University
+</footer>
+
+</body>
+</html>
