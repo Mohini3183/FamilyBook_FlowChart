@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FamilyBook - Private Family Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --p:#5B4FCF;--p2:#7B70E8;--ps:#EDEAFF;--pb:#D5D0F5;
+  --rose:#D63F7A;--rose-s:#FDEDF5;
+  --teal:#0CA678;--teal-s:#E3FAF4;
+  --gold:#E67700;--gold-s:#FFF3CD;
+  --red:#E03131;--red-s:#FFF0F0;
+  --bg:#F6F5FF;--surf:#FFFFFF;--surf2:#F0EEF9;
+  --bdr:#E5E2F5;--bdr2:#EDE9FF;
+  --t1:#18152B;--t2:#5F5980;--t3:#A49DC0;
+  --r-sm:10px;--r-md:14px;--r-lg:20px;--r-xl:26px;--r-full:99px;
+  --sh-sm:0 1px 4px rgba(91,79,207,.07);
+  --sh-md:0 4px 16px rgba(91,79,207,.11);
+  --sh-lg:0 8px 32px rgba(91,79,207,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:linear-gradient(135deg,#13102B 0%,#1E1850 50%,#130E2A 100%);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 0;
+  font-family:'Inter',system-ui,sans-serif;overflow-x:hidden;}
+
+/* ── OUTER WRAPPER ── */
+.outer{display:flex;flex-direction:column;align-items:center;gap:20px;}
+.phone-label{color:rgba(255,255,255,.4);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;}
+
+/* ── PHONE FRAME ── */
+.phone-frame{position:relative;width:393px;height:852px;background:#000;border-radius:55px;
+  box-shadow:0 0 0 2px #2A2A2A,0 0 0 4px #111,0 40px 100px rgba(0,0,0,.9),
+  inset 0 0 0 1.5px #1C1C1C;overflow:hidden;flex-shrink:0;}
+.phone-screen{position:absolute;inset:0;border-radius:53px;overflow:hidden;background:var(--bg);}
+.d-island{position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:122px;height:36px;background:#000;border-radius:22px;z-index:1000;}
+.btn-side{position:absolute;background:#1A1A1A;border-radius:3px;}
+.bs-v1{left:-3px;top:162px;width:4px;height:34px;}
+.bs-v2{left:-3px;top:208px;width:4px;height:54px;}
+.bs-v3{left:-3px;top:275px;width:4px;height:54px;}
+.bs-pw{right:-3px;top:192px;width:4px;height:74px;}
+
+/* ── SCREENS ── */
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;display:none;flex-direction:column;background:var(--bg);}
+.screen.active{display:flex;animation:fadeUp .22s ease both;}
+.screen::-webkit-scrollbar{display:none;}
+.screen{-ms-overflow-style:none;scrollbar-width:none;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── STATUS BAR ── */
+.sbar{display:flex;justify-content:space-between;align-items:center;
+  padding:54px 28px 8px;flex-shrink:0;position:relative;z-index:10;}
+.sbar-time{font-size:15px;font-weight:700;color:var(--t1);letter-spacing:.1px;}
+.sbar-icons{display:flex;gap:6px;align-items:center;}
+
+/* ── BOTTOM NAV ── */
+.bnav{display:flex;justify-content:space-around;align-items:stretch;
+  padding:10px 0 30px;background:var(--surf);border-top:1px solid var(--bdr);
+  position:sticky;bottom:0;z-index:200;flex-shrink:0;}
+.ni{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;padding:4px 14px;min-width:44px;min-height:44px;
+  border-radius:var(--r-md);transition:all .18s;}
+.ni-ico{font-size:22px;color:var(--t3);transition:all .18s;}
+.ni-lbl{font-size:9.5px;color:var(--t3);font-weight:600;letter-spacing:.2px;line-height:1;}
+.ni.active .ni-ico,.ni.active .ni-lbl{color:var(--p);}
+.ni-center{padding:0 14px;}
+.ni-center .ni-ico-wrap{width:48px;height:48px;background:linear-gradient(135deg,var(--p),var(--p2));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;
+  box-shadow:0 4px 16px rgba(91,79,207,.38);margin-bottom:3px;}
+
+/* ── NAV BAR (push screens) ── */
+.nav-bar{display:flex;align-items:center;gap:12px;padding:8px 20px 12px;flex-shrink:0;}
+.back-btn{width:36px;height:36px;background:var(--surf);border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:var(--sh-sm);border:1px solid var(--bdr);flex-shrink:0;
+  font-size:16px;color:var(--t1);font-weight:600;transition:all .15s;}
+.back-btn:active{transform:scale(.95);}
+.nav-title{font-size:17px;font-weight:700;color:var(--t1);letter-spacing:-.2px;}
+
+/* ── BUTTONS ── */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:15px 22px;border-radius:var(--r-md);font-size:15px;font-weight:600;
+  cursor:pointer;border:none;transition:all .18s;font-family:inherit;letter-spacing:-.1px;
+  min-height:50px;}
+.btn:active{transform:scale(.97);}
+.btn-p{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;
+  box-shadow:0 6px 20px rgba(91,79,207,.32);}
+.btn-rose{background:linear-gradient(135deg,var(--rose),#E85F9B);color:#fff;
+  box-shadow:0 6px 20px rgba(214,63,122,.28);}
+.btn-teal{background:linear-gradient(135deg,var(--teal),#14C98A);color:#fff;
+  box-shadow:0 6px 20px rgba(12,166,120,.28);}
+.btn-outline{background:var(--surf);color:var(--p);border:1.5px solid var(--p);}
+.btn-ghost{background:var(--surf2);color:var(--t2);border:1px solid var(--bdr);}
+.btn-danger{background:linear-gradient(135deg,var(--red),#F05252);color:#fff;
+  box-shadow:0 6px 20px rgba(224,49,49,.28);}
+.btn-full{width:100%;}
+
+/* ── CARDS ── */
+.card{background:var(--surf);border-radius:var(--r-lg);
+  box-shadow:var(--sh-sm);border:1px solid var(--bdr2);}
+
+/* ── TAGS / BADGES ── */
+.tag{display:inline-flex;align-items:center;padding:3px 9px;border-radius:var(--r-full);
+  font-size:11px;font-weight:600;letter-spacing:.2px;line-height:1.5;}
+.tag-p{background:var(--ps);color:var(--p);}
+.tag-rose{background:var(--rose-s);color:var(--rose);}
+.tag-teal{background:var(--teal-s);color:var(--teal);}
+.tag-gold{background:var(--gold-s);color:var(--gold);}
+.tag-red{background:var(--red-s);color:var(--red);}
+.badge{min-width:17px;height:17px;background:var(--red);border-radius:var(--r-full);
+  color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;padding:0 4px;}
+
+/* ── INPUTS ── */
+.inp-wrap{display:flex;flex-direction:column;gap:6px;}
+.inp-lbl{font-size:13px;font-weight:600;color:var(--t1);}
+.inp{padding:13px 15px;background:var(--surf);border:1.5px solid var(--bdr);
+  border-radius:var(--r-md);font-size:15px;color:var(--t1);font-family:inherit;
+  outline:none;transition:border-color .18s;width:100%;}
+.inp:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,79,207,.1);}
+
+/* ── AVATAR ── */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:700;flex-shrink:0;}
+.av-p{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;}
+.av-rose{background:linear-gradient(135deg,var(--rose),#E85F9B);color:#fff;}
+.av-teal{background:linear-gradient(135deg,var(--teal),#14C98A);color:#fff;}
+.av-gold{background:linear-gradient(135deg,var(--gold),#FAB005);color:#fff;}
+.av-blue{background:linear-gradient(135deg,#2F9CEB,#4FBDFF);color:#fff;}
+.av-orange{background:linear-gradient(135deg,#F76707,#FF922B);color:#fff;}
+
+/* ── PROGRESS ── */
+.prog-wrap{background:var(--bdr2);border-radius:var(--r-full);height:6px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,var(--p),var(--p2));}
+
+/* ── SECTION HEADER ── */
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.sh-title{font-size:17px;font-weight:700;color:var(--t1);letter-spacing:-.2px;}
+.sh-action{font-size:13px;color:var(--p);font-weight:600;cursor:pointer;}
+
+/* ── SCREEN CONTENT ── */
+.sc{flex:1;padding:0 20px 16px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;}
+
+/* ── GRADIENT TEXT ── */
+.gt{background:linear-gradient(135deg,var(--p),var(--rose));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--bdr);margin:4px 0;}
+
+/* ── TOGGLE ── */
+.toggle{width:46px;height:27px;border-radius:var(--r-full);display:flex;align-items:center;
+  padding:3px;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle-on{background:linear-gradient(135deg,var(--p),var(--p2));}
+.toggle-off{background:var(--bdr);}
+.toggle-dot{width:21px;height:21px;background:var(--surf);border-radius:50%;
+  transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.15);}
+.toggle-on .toggle-dot{transform:translateX(19px);}
+
+/* ── ROLE CHIP ── */
+.role-chip{padding:8px 14px;background:var(--surf2);color:var(--t2);
+  border:1.5px solid var(--bdr);border-radius:var(--r-full);font-size:13px;
+  font-weight:600;cursor:pointer;transition:all .18s;}
+.role-chip.sel{background:var(--p);color:#fff;border-color:var(--p);
+  box-shadow:0 4px 12px rgba(91,79,207,.3);}
+
+/* ── CHAT BUBBLES ── */
+.bubble-out{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;
+  border-radius:18px 18px 4px 18px;padding:11px 15px;max-width:248px;
+  align-self:flex-end;font-size:14px;line-height:1.5;}
+.bubble-in{background:var(--surf);color:var(--t1);
+  border-radius:18px 18px 18px 4px;padding:11px 15px;max-width:248px;
+  align-self:flex-start;font-size:14px;line-height:1.5;
+  box-shadow:var(--sh-sm);border:1px solid var(--bdr2);}
+
+/* ── CAL DAY ── */
+.cal-d{width:42px;height:42px;border-radius:var(--r-sm);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;cursor:pointer;transition:all .15s;gap:2px;}
+.cal-d.has-evt{background:var(--ps);}
+.cal-d.today{background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;box-shadow:0 4px 12px rgba(91,79,207,.32);}
+.cal-dot{width:4px;height:4px;border-radius:50%;background:var(--rose);}
+.cal-d.today .cal-dot{background:#fff;}
+.cal-head{font-size:11px;font-weight:600;color:var(--t3);text-align:center;}
+
+/* ── POST CARD ── */
+.post-card{background:var(--surf);border-radius:var(--r-lg);
+  border:1px solid var(--bdr2);overflow:hidden;box-shadow:var(--sh-sm);}
+.post-hdr{display:flex;align-items:center;gap:10px;padding:14px 14px 10px;}
+.post-act{display:flex;align-items:center;padding:4px 8px 12px;}
+.post-act-btn{display:flex;align-items:center;gap:5px;padding:8px 11px;cursor:pointer;
+  border-radius:var(--r-sm);font-size:13px;color:var(--t3);font-weight:500;transition:all .12s;}
+.post-act-btn:active{background:var(--surf2);}
+
+/* ── SETTINGS ROW ── */
+.set-row{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--bdr2);}
+.set-row:last-child{border-bottom:none;}
+.set-row-l{display:flex;align-items:center;gap:13px;}
+.set-ico{width:36px;height:36px;border-radius:var(--r-sm);display:flex;
+  align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.set-title{font-size:14px;font-weight:600;color:var(--t1);}
+.set-sub{font-size:12px;color:var(--t3);margin-top:1px;}
+
+/* ── PULSE RING (emergency) ── */
+@keyframes pring{0%{transform:scale(1);opacity:.7;}100%{transform:scale(2.2);opacity:0;}}
+.pring{position:absolute;border-radius:50%;border:2px solid var(--red);animation:pring 1.8s ease-out infinite;}
+
+/* ── SCREEN NAV PANEL (outside phone) ── */
+.snav-panel{display:flex;flex-direction:column;gap:8px;align-items:center;width:100%;}
+.snav-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);
+  letter-spacing:2px;text-transform:uppercase;}
+.snav-scroll{display:flex;gap:7px;overflow-x:auto;padding:4px 16px 8px;
+  max-width:440px;width:100%;-ms-overflow-style:none;scrollbar-width:none;}
+.snav-scroll::-webkit-scrollbar{display:none;}
+.snav-chip{flex-shrink:0;padding:5px 12px;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);border-radius:var(--r-full);
+  font-size:10.5px;font-weight:600;color:rgba(255,255,255,.45);cursor:pointer;
+  white-space:nowrap;transition:all .18s;}
+.snav-chip:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);}
+.snav-chip.active-snav{background:var(--p);border-color:var(--p);color:#fff;
+  box-shadow:0 2px 8px rgba(91,79,207,.4);}
+.snav-group-sep{width:1px;height:18px;background:rgba(255,255,255,.15);flex-shrink:0;align-self:center;}
+</style>
+</head>
+<body>
+<div class="outer">
+
+  <!-- label -->
+  <div class="phone-label">FamilyBook · Mohini Sultana Mukta · 201-15-3183 · DIU</div>
+
+  <!-- PHONE -->
+  <div class="phone-frame">
+    <div class="d-island"></div>
+    <div class="btn-side bs-v1"></div>
+    <div class="btn-side bs-v2"></div>
+    <div class="btn-side bs-v3"></div>
+    <div class="btn-side bs-pw"></div>
+    <div class="phone-screen">
+
+<!-- ═══════════════════════════════════════════════ SPLASH ═══ -->
+<div id="s-splash" class="screen active" style="background:linear-gradient(160deg,#5B4FCF 0%,#7B5EA7 40%,#D63F7A 100%);align-items:center;justify-content:center;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:24px;padding:48px 36px;">
+    <!-- Logo mark -->
+    <div style="width:108px;height:108px;position:relative;">
+      <div style="position:absolute;inset:0;border-radius:32px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);"></div>
+      <div style="position:absolute;inset:8px;border-radius:24px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+          <!-- House -->
+          <path d="M10 28L30 10L50 28V52H10V28Z" fill="rgba(255,255,255,.9)" rx="2"/>
+          <path d="M7 30L30 7L53 30" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <!-- Door -->
+          <rect x="24" y="38" width="12" height="14" rx="6" fill="rgba(91,79,207,.6)"/>
+          <!-- Windows -->
+          <rect x="13" y="32" width="9" height="8" rx="2.5" fill="rgba(91,79,207,.45)"/>
+          <rect x="38" y="32" width="9" height="8" rx="2.5" fill="rgba(91,79,207,.45)"/>
+          <!-- People -->
+          <circle cx="21" cy="25" r="4.5" fill="rgba(255,255,255,.7)"/>
+          <circle cx="30" cy="22" r="5" fill="white" opacity=".85"/>
+          <circle cx="39" cy="25" r="4.5" fill="rgba(255,107,157,.7)"/>
+        </svg>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:38px;font-weight:900;color:#fff;letter-spacing:-.5px;
+        text-shadow:0 2px 16px rgba(0,0,0,.2);">FamilyBook</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.78);margin-top:8px;
+        font-weight:400;font-style:italic;letter-spacing:.2px;">
+        Your Private Family World</div>
+    </div>
+    <!-- Loading indicator -->
+    <div style="display:flex;gap:6px;margin-top:16px;">
+      <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.9);animation:fadeUp .5s ease .0s both;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.6);animation:fadeUp .5s ease .2s both;"></div>
+      <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);animation:fadeUp .5s ease .4s both;"></div>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:52px;left:50%;transform:translateX(-50%)" onclick="goTo('s-onboard1')">
+    <div style="border:1.5px solid rgba(255,255,255,.55);color:#fff;
+      background:rgba(255,255,255,.12);cursor:pointer;padding:13px 32px;
+      border-radius:var(--r-md);font-size:14px;font-weight:600;
+      backdrop-filter:blur(8px);letter-spacing:.1px;">Tap to Begin →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ ONBOARD 1 ═══ -->
+<div id="s-onboard1" class="screen" style="background:var(--bg);">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 28px 20px;">
+    <!-- Illustration -->
+    <svg width="260" height="210" viewBox="0 0 260 210" fill="none">
+      <ellipse cx="130" cy="192" rx="92" ry="14" fill="var(--ps)" opacity=".5"/>
+      <!-- Shield shape -->
+      <path d="M130 28L192 55V128Q192 168 130 192Q68 168 68 128V55Z" fill="url(#og1)" opacity=".9"/>
+      <defs>
+        <linearGradient id="og1" x1="68" y1="28" x2="192" y2="192" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#7B70E8"/>
+          <stop offset="100%" stop-color="#5B4FCF"/>
+        </linearGradient>
+      </defs>
+      <!-- Lock -->
+      <rect x="112" y="108" width="36" height="26" rx="8" fill="white" opacity=".92"/>
+      <path d="M120 108V100Q120 90 130 90Q140 90 140 100V108" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="130" cy="121" r="4.5" fill="var(--p)"/>
+      <!-- Family silhouettes outside shield -->
+      <circle cx="42" cy="105" r="16" fill="var(--rose-s)"/>
+      <circle cx="42" cy="92" r="9" fill="var(--rose)" opacity=".7"/>
+      <ellipse cx="42" cy="110" rx="10" ry="12" fill="var(--rose)" opacity=".5"/>
+      <circle cx="218" cy="105" r="16" fill="var(--teal-s)"/>
+      <circle cx="218" cy="92" r="9" fill="var(--teal)" opacity=".7"/>
+      <ellipse cx="218" cy="110" rx="10" ry="12" fill="var(--teal)" opacity=".5"/>
+      <!-- Stars -->
+      <circle cx="55" cy="55" r="5" fill="var(--gold)" opacity=".7"/>
+      <circle cx="205" cy="50" r="4" fill="var(--rose)" opacity=".6"/>
+      <circle cx="46" cy="145" r="3" fill="var(--p)" opacity=".5"/>
+    </svg>
+    <div style="margin-top:32px;text-align:center;">
+      <div style="font-size:27px;font-weight:800;color:var(--t1);line-height:1.2;letter-spacing:-.3px;">
+        Private &amp; <span class="gt">100% Secure</span></div>
+      <div style="font-size:14.5px;color:var(--t2);margin-top:12px;line-height:1.65;max-width:280px;">
+        Only your invited family members can see your posts. No ads. No algorithms. No strangers.</div>
+    </div>
+    <!-- Dots -->
+    <div style="display:flex;gap:8px;margin-top:32px;">
+      <div style="width:22px;height:7px;background:var(--p);border-radius:var(--r-full);"></div>
+      <div style="width:7px;height:7px;background:var(--bdr2);border-radius:var(--r-full);"></div>
+      <div style="width:7px;height:7px;background:var(--bdr2);border-radius:var(--r-full);"></div>
+    </div>
+  </div>
+  <div style="padding:0 24px 44px;display:flex;flex-direction:column;gap:12px;">
+    <div class="btn btn-p btn-full" onclick="goTo('s-onboard2')">Next →</div>
+    <div style="text-align:center;font-size:14px;color:var(--t3);cursor:pointer;" onclick="goTo('s-login')">Skip</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ ONBOARD 2 ═══ -->
+<div id="s-onboard2" class="screen" style="background:var(--bg);">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 28px 20px;">
+    <svg width="260" height="210" viewBox="0 0 260 210" fill="none">
+      <ellipse cx="130" cy="193" rx="90" ry="13" fill="var(--rose-s)" opacity=".5"/>
+      <defs>
+        <linearGradient id="og2a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#5B4FCF"/><stop offset="100%" stop-color="#7B70E8"/>
+        </linearGradient>
+        <linearGradient id="og2b" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#D63F7A"/><stop offset="100%" stop-color="#E85F9B"/>
+        </linearGradient>
+      </defs>
+      <!-- Central connecting lines -->
+      <line x1="130" y1="110" x2="52" y2="80" stroke="var(--bdr)" stroke-width="2.5" stroke-dasharray="5 4"/>
+      <line x1="130" y1="110" x2="208" y2="80" stroke="var(--bdr)" stroke-width="2.5" stroke-dasharray="5 4"/>
+      <line x1="130" y1="110" x2="52" y2="158" stroke="var(--bdr)" stroke-width="2.5" stroke-dasharray="5 4"/>
+      <line x1="130" y1="110" x2="208" y2="158" stroke="var(--bdr)" stroke-width="2.5" stroke-dasharray="5 4"/>
+      <line x1="130" y1="110" x2="130" y2="42" stroke="var(--bdr)" stroke-width="2.5" stroke-dasharray="5 4"/>
+      <!-- Central node -->
+      <circle cx="130" cy="110" r="32" fill="url(#og2b)" opacity=".9"/>
+      <text x="120" y="116" font-size="22" fill="white">👨‍👩‍👧</text>
+      <!-- Outer nodes -->
+      <circle cx="52" cy="70" r="24" fill="url(#og2a)" opacity=".85"/>
+      <text x="43" y="76" font-size="18" fill="white">👴</text>
+      <circle cx="208" cy="70" r="24" fill="var(--teal)" opacity=".85"/>
+      <text x="199" y="76" font-size="18" fill="white">👩</text>
+      <circle cx="52" cy="168" r="22" fill="var(--gold)" opacity=".85"/>
+      <text x="43" y="174" font-size="18" fill="white">👦</text>
+      <circle cx="208" cy="168" r="22" fill="var(--rose)" opacity=".78"/>
+      <text x="199" y="174" font-size="18" fill="white">👧</text>
+      <circle cx="130" cy="36" r="20" fill="var(--p)" opacity=".72"/>
+      <text x="121" y="42" font-size="16" fill="white">👶</text>
+      <!-- Ripple -->
+      <circle cx="130" cy="110" r="44" fill="none" stroke="var(--rose)" stroke-width="1.5" opacity=".25"/>
+      <circle cx="130" cy="110" r="58" fill="none" stroke="var(--p)" stroke-width="1" opacity=".15"/>
+    </svg>
+    <div style="margin-top:32px;text-align:center;">
+      <div style="font-size:27px;font-weight:800;color:var(--t1);line-height:1.2;letter-spacing:-.3px;">
+        Everyone <span class="gt">Connected</span></div>
+      <div style="font-size:14.5px;color:var(--t2);margin-top:12px;line-height:1.65;max-width:280px;">
+        Build your interactive family tree. Share posts, celebrate milestones, and never miss a moment.</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:32px;">
+      <div style="width:7px;height:7px;background:var(--bdr2);border-radius:var(--r-full);"></div>
+      <div style="width:22px;height:7px;background:var(--p);border-radius:var(--r-full);"></div>
+      <div style="width:7px;height:7px;background:var(--bdr2);border-radius:var(--r-full);"></div>
+    </div>
+  </div>
+  <div style="padding:0 24px 44px;display:flex;flex-direction:column;gap:12px;">
+    <div class="btn btn-p btn-full" onclick="goTo('s-onboard3')">Next →</div>
+    <div style="text-align:center;font-size:14px;color:var(--t3);cursor:pointer;" onclick="goTo('s-login')">Skip</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ ONBOARD 3 ═══ -->
+<div id="s-onboard3" class="screen" style="background:var(--bg);">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 28px 20px;">
+    <svg width="260" height="210" viewBox="0 0 260 210" fill="none">
+      <ellipse cx="130" cy="193" rx="90" ry="13" fill="var(--teal-s)" opacity=".5"/>
+      <defs>
+        <linearGradient id="og3a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#5B4FCF"/><stop offset="100%" stop-color="#D63F7A"/>
+        </linearGradient>
+        <linearGradient id="og3b" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0CA678"/><stop offset="100%" stop-color="#F59F00"/>
+        </linearGradient>
+      </defs>
+      <!-- Polaroid cards -->
+      <rect x="18" y="72" width="90" height="112" rx="10" fill="white" opacity=".95"
+        style="filter:drop-shadow(0 4px 12px rgba(91,79,207,.14));" transform="rotate(-10,63,128)"/>
+      <rect x="22" y="76" width="82" height="70" rx="7" fill="url(#og3a)" opacity=".75"
+        transform="rotate(-10,63,111)"/>
+      <text x="48" y="115" font-size="28" transform="rotate(-10,63,111)">🏡</text>
+      <rect x="152" y="62" width="90" height="112" rx="10" fill="white" opacity=".95"
+        style="filter:drop-shadow(0 4px 12px rgba(91,79,207,.14));" transform="rotate(8,197,118)"/>
+      <rect x="156" y="66" width="82" height="70" rx="7" fill="url(#og3b)" opacity=".75"
+        transform="rotate(8,197,101)"/>
+      <text x="178" y="105" font-size="28" transform="rotate(8,197,101)">🎂</text>
+      <!-- Center card (elevated) -->
+      <rect x="85" y="44" width="90" height="120" rx="12" fill="white"
+        style="filter:drop-shadow(0 8px 24px rgba(91,79,207,.2));"/>
+      <rect x="89" y="48" width="82" height="70" rx="8" fill="url(#og3a)" opacity=".85"/>
+      <text x="112" y="88" font-size="28">📸</text>
+      <text x="92" y="130" font-size="11" font-weight="700" fill="var(--t1)" font-family="Inter">Family Trip 2025</text>
+      <text x="92" y="145" font-size="9.5" fill="var(--t3)" font-family="Inter">March · 12 memories</text>
+      <text x="94" y="162" font-size="13">❤️</text><text x="148" y="162" font-size="13">✨</text>
+    </svg>
+    <div style="margin-top:32px;text-align:center;">
+      <div style="font-size:27px;font-weight:800;color:var(--t1);line-height:1.2;letter-spacing:-.3px;">
+        Cherish <span class="gt">Every Memory</span></div>
+      <div style="font-size:14.5px;color:var(--t2);margin-top:12px;line-height:1.65;max-width:280px;">
+        Photos, stories, voice notes and milestones — all in one private, beautiful archive.</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:32px;">
+      <div style="width:7px;height:7px;background:var(--bdr2);border-radius:var(--r-full);"></div>
+      <div style="width:7px;height:7px;background:var(--bdr2);border-radius:var(--r-full);"></div>
+      <div style="width:22px;height:7px;background:var(--p);border-radius:var(--r-full);"></div>
+    </div>
+  </div>
+  <div style="padding:0 24px 44px;">
+    <div class="btn btn-p btn-full" onclick="goTo('s-login')" style="font-size:16px;">Get Started 🎉</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ LOGIN ═══ -->
+<div id="s-login" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"><svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="var(--t1)" stroke-opacity=".3"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="var(--t1)" opacity=".4"/><rect x="2" y="2" width="15" height="8" rx="2" fill="var(--t1)"/></svg></div></div>
+  <div class="sc" style="justify-content:center;padding-top:0;">
+    <div style="text-align:center;padding:16px 0 4px;">
+      <div style="width:64px;height:64px;background:linear-gradient(135deg,var(--p),var(--rose));
+        border-radius:20px;display:flex;align-items:center;justify-content:center;
+        font-size:28px;margin:0 auto 16px;box-shadow:0 8px 24px rgba(91,79,207,.3);">🏠</div>
+      <div style="font-size:28px;font-weight:800;color:var(--t1);letter-spacing:-.4px;">Welcome back</div>
+      <div style="font-size:14px;color:var(--t2);margin-top:5px;">Sign in to your family</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="inp-wrap">
+        <div class="inp-lbl">Email address</div>
+        <input class="inp" placeholder="mohini@familybook.app" value="mohini@familybook.app" style="background:var(--surf);"/>
+      </div>
+      <div class="inp-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="inp-lbl">Password</div>
+          <div style="font-size:13px;color:var(--p);font-weight:600;cursor:pointer;">Forgot?</div>
+        </div>
+        <input class="inp" type="password" placeholder="Enter your password" value="••••••••" style="background:var(--surf);"/>
+      </div>
+      <div class="btn btn-p btn-full" onclick="goTo('s-home')" style="margin-top:4px;">Sign In</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="flex:1;height:1px;background:var(--bdr);"></div>
+        <span style="font-size:12px;color:var(--t3);">or</span>
+        <div style="flex:1;height:1px;background:var(--bdr);"></div>
+      </div>
+      <div class="btn btn-ghost btn-full">🌐  Continue with Google</div>
+    </div>
+    <div style="text-align:center;font-size:14px;color:var(--t2);">
+      New to FamilyBook?
+      <span style="color:var(--p);font-weight:600;cursor:pointer;" onclick="goTo('s-signup')"> Sign Up</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SIGN UP ═══ -->
+<div id="s-signup" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;">
+      <div class="back-btn" onclick="goTo('s-login')">‹</div>
+      <span class="nav-title">Create Account</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:13px;">
+      <div class="inp-wrap">
+        <div class="inp-lbl">Full Name</div>
+        <input class="inp" placeholder="Your full name" value="Mohini Sultana Mukta" style="background:var(--surf);"/>
+      </div>
+      <div class="inp-wrap">
+        <div class="inp-lbl">Phone Number</div>
+        <input class="inp" placeholder="+880 1700-000000" style="background:var(--surf);"/>
+      </div>
+      <div class="inp-wrap">
+        <div class="inp-lbl">Email</div>
+        <input class="inp" placeholder="you@example.com" style="background:var(--surf);"/>
+      </div>
+      <div class="inp-wrap">
+        <div class="inp-lbl">Password</div>
+        <input class="inp" type="password" placeholder="Create a strong password" style="background:var(--surf);"/>
+      </div>
+      <!-- Role -->
+      <div style="background:var(--surf);border-radius:var(--r-lg);padding:16px;border:1px solid var(--bdr2);">
+        <div style="font-size:13px;font-weight:700;color:var(--p);margin-bottom:12px;">Your role in family</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <div class="role-chip" onclick="selChip(this)">Father</div>
+          <div class="role-chip" onclick="selChip(this)">Mother</div>
+          <div class="role-chip sel" onclick="selChip(this)">Daughter</div>
+          <div class="role-chip" onclick="selChip(this)">Son</div>
+          <div class="role-chip" onclick="selChip(this)">Grandparent</div>
+          <div class="role-chip" onclick="selChip(this)">Other</div>
+        </div>
+      </div>
+      <div class="btn btn-p btn-full" onclick="goTo('s-create-family')">Continue →</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ CREATE FAMILY ═══ -->
+<div id="s-create-family" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;">
+      <div class="back-btn" onclick="goTo('s-signup')">‹</div>
+      <span class="nav-title">Create Your Family</span>
+    </div>
+    <!-- Banner -->
+    <div style="background:linear-gradient(135deg,var(--ps),var(--rose-s));border-radius:var(--r-lg);
+      padding:20px;text-align:center;border:1px solid var(--pb);">
+      <div style="font-size:40px;margin-bottom:8px;">🏡</div>
+      <div style="font-size:17px;font-weight:700;color:var(--p);">Set up your family space</div>
+      <div style="font-size:13px;color:var(--t2);margin-top:4px;">Invite-only · Completely private</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:13px;">
+      <div class="inp-wrap">
+        <div class="inp-lbl">Family Name</div>
+        <input class="inp" placeholder="e.g. The Madbor Family" value="The Madbor Family" style="background:var(--surf);"/>
+      </div>
+      <div class="inp-wrap">
+        <div class="inp-lbl">Description  <span style="color:var(--t3);font-weight:400;">(optional)</span></div>
+        <input class="inp" placeholder="Our happy home 🌸" value="Our happy little family 🌸" style="background:var(--surf);"/>
+      </div>
+    </div>
+    <!-- Members to invite -->
+    <div class="card" style="padding:16px;">
+      <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:14px;">Invite family members</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="av av-teal" style="width:40px;height:40px;font-size:14px;">MM</div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--t1);">Miraz Madbor</div><div style="font-size:12px;color:var(--t3);">Father</div></div>
+          <div class="tag tag-teal">Invited ✓</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="av av-rose" style="width:40px;height:40px;font-size:14px;">N</div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--t1);">Nasima</div><div style="font-size:12px;color:var(--t3);">Mother</div></div>
+          <div class="tag tag-teal">Invited ✓</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--surf2);
+          border-radius:var(--r-md);border:1.5px dashed var(--bdr);cursor:pointer;" onclick="goTo('s-add-member')">
+          <div style="width:40px;height:40px;background:var(--ps);border-radius:50%;
+            display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--p);">+</div>
+          <div style="font-size:14px;color:var(--p);font-weight:600;">Add more members…</div>
+        </div>
+      </div>
+    </div>
+    <div class="btn btn-p btn-full" onclick="goTo('s-home')">Create Family Space 🎉</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ HOME ═══ -->
+<div id="s-home" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span>
+    <div class="sbar-icons">
+      <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="var(--t1)" stroke-opacity=".3"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="var(--t1)" opacity=".4"/><rect x="2" y="2" width="15" height="8" rx="2" fill="var(--t1)"/></svg>
+    </div>
+  </div>
+  <!-- Header row -->
+  <div style="padding:0 20px 10px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+    <div>
+      <div style="font-size:24px;font-weight:800;color:var(--t1);letter-spacing:-.4px;">FamilyBook 🏠</div>
+      <div style="font-size:12px;color:var(--t3);margin-top:2px;">The Madbor Family · Private</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <!-- Emergency -->
+      <div onclick="goTo('s-emergency')" style="width:38px;height:38px;background:linear-gradient(135deg,var(--red),#F05252);
+        border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;
+        cursor:pointer;box-shadow:0 4px 12px rgba(224,49,49,.3);">🚨</div>
+      <!-- Notifications -->
+      <div style="position:relative;cursor:pointer;" onclick="goTo('s-messages')">
+        <div style="width:38px;height:38px;background:var(--surf);border-radius:12px;
+          display:flex;align-items:center;justify-content:center;font-size:18px;
+          box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">🔔</div>
+        <div class="badge" style="position:absolute;top:-4px;right:-4px;font-size:9px;min-width:15px;height:15px;">3</div>
+      </div>
+    </div>
+  </div>
+  <!-- Quick actions -->
+  <div style="padding:0 20px 14px;display:flex;gap:12px;overflow-x:auto;flex-shrink:0;
+    -ms-overflow-style:none;scrollbar-width:none;">
+    <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;" onclick="goTo('s-create-post')">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--p),var(--p2));
+        border-radius:18px;display:flex;align-items:center;justify-content:center;
+        font-size:22px;box-shadow:0 4px 14px rgba(91,79,207,.28);">✏️</div>
+      <span style="font-size:10.5px;font-weight:600;color:var(--t2);">Post</span>
+    </div>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;" onclick="goTo('s-memories')">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--rose),#E85F9B);
+        border-radius:18px;display:flex;align-items:center;justify-content:center;
+        font-size:22px;box-shadow:0 4px 14px rgba(214,63,122,.25);">📸</div>
+      <span style="font-size:10.5px;font-weight:600;color:var(--t2);">Memories</span>
+    </div>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;" onclick="goTo('s-create-event')">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--teal),#14C98A);
+        border-radius:18px;display:flex;align-items:center;justify-content:center;
+        font-size:22px;box-shadow:0 4px 14px rgba(12,166,120,.25);">📅</div>
+      <span style="font-size:10.5px;font-weight:600;color:var(--t2);">Event</span>
+    </div>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;" onclick="goTo('s-shared-lists')">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--gold),#FAB005);
+        border-radius:18px;display:flex;align-items:center;justify-content:center;
+        font-size:22px;box-shadow:0 4px 14px rgba(230,119,0,.25);">📋</div>
+      <span style="font-size:10.5px;font-weight:600;color:var(--t2);">Lists</span>
+    </div>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;" onclick="goTo('s-doc-vault')">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,#2F9CEB,#4FBDFF);
+        border-radius:18px;display:flex;align-items:center;justify-content:center;
+        font-size:22px;box-shadow:0 4px 14px rgba(47,156,235,.25);">🔐</div>
+      <span style="font-size:10.5px;font-weight:600;color:var(--t2);">Vault</span>
+    </div>
+  </div>
+  <!-- Upcoming event banner -->
+  <div style="padding:0 20px 14px;flex-shrink:0;">
+    <div onclick="goTo('s-event-detail')" style="background:linear-gradient(135deg,var(--p),var(--p2));
+      border-radius:var(--r-lg);padding:15px 16px;cursor:pointer;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-12px;top:-12px;width:80px;height:80px;
+        border-radius:50%;background:rgba(255,255,255,.08);"></div>
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.5px;">🎂 UPCOMING · 3 DAYS</div>
+      <div style="font-size:17px;font-weight:800;color:#fff;margin-top:4px;">Amma's Birthday 🎉</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.72);margin-top:2px;">Nasima Madbor · March 18</div>
+    </div>
+  </div>
+  <!-- Timeline header -->
+  <div style="padding:0 20px 10px;flex-shrink:0;">
+    <div class="sh"><div class="sh-title">Family Timeline</div><div class="sh-action">Filter</div></div>
+  </div>
+  <!-- Post 1 -->
+  <div style="padding:0 20px 12px;">
+    <div class="post-card" onclick="goTo('s-post-detail')" style="cursor:pointer;">
+      <div class="post-hdr">
+        <div class="av av-teal" style="width:44px;height:44px;font-size:15px;">MM</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--t1);">Miraz Madbor <span style="font-size:11px;color:var(--t3);font-weight:400;">· Father</span></div>
+          <div style="font-size:11.5px;color:var(--t3);">2 hours ago · 📍 Home</div>
+        </div>
+        <div style="font-size:20px;cursor:pointer;color:var(--t3);">···</div>
+      </div>
+      <div style="padding:0 14px 12px;font-size:14.5px;color:var(--t2);line-height:1.6;">
+        Just came back from the market to find Tawsia's new drawing on the fridge. Our little artist! 🎨</div>
+      <div style="height:196px;background:linear-gradient(135deg,var(--ps),var(--rose-s),var(--teal-s));
+        display:flex;align-items:center;justify-content:center;font-size:72px;">🎨</div>
+      <div class="post-act">
+        <div class="post-act-btn"><span>❤️</span><span>4</span></div>
+        <div class="post-act-btn"><span>💬</span><span>2</span></div>
+        <div class="post-act-btn"><span>↗️</span><span>Share</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Post 2 -->
+  <div style="padding:0 20px 12px;">
+    <div class="post-card">
+      <div class="post-hdr">
+        <div class="av av-rose" style="width:44px;height:44px;font-size:15px;">N</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--t1);">Nasima <span style="font-size:11px;color:var(--t3);font-weight:400;">· Mother</span></div>
+          <div style="font-size:11.5px;color:var(--t3);">Yesterday · 📍 Kitchen</div>
+        </div>
+      </div>
+      <div style="padding:0 14px 12px;font-size:14.5px;color:var(--t2);line-height:1.6;">
+        Made biryani for everyone today! 🍛 Come home tomorrow for lunch — all are invited!</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+        <div style="height:108px;background:linear-gradient(135deg,var(--gold-s),#FFE0B2);
+          display:flex;align-items:center;justify-content:center;font-size:44px;">🍛</div>
+        <div style="height:108px;background:linear-gradient(135deg,var(--rose-s),#FFD6E7);
+          display:flex;align-items:center;justify-content:center;font-size:44px;">🥘</div>
+      </div>
+      <div class="post-act">
+        <div class="post-act-btn"><span>❤️</span><span>6</span></div>
+        <div class="post-act-btn"><span>💬</span><span>3</span></div>
+        <div class="post-act-btn"><span>↗️</span><span>Share</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Post 3 – voice note -->
+  <div style="padding:0 20px 16px;">
+    <div class="post-card">
+      <div class="post-hdr">
+        <div class="av av-gold" style="width:44px;height:44px;font-size:15px;">M</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--t1);">Mary <span style="font-size:11px;color:var(--t3);font-weight:400;">· Sister</span></div>
+          <div style="font-size:11.5px;color:var(--t3);">2 days ago</div>
+        </div>
+      </div>
+      <div style="padding:0 14px 14px;">
+        <div style="font-size:14px;color:var(--t2);margin-bottom:10px;">Sent a voice message for the family 🎙️</div>
+        <div style="background:var(--surf2);border-radius:var(--r-md);padding:13px 14px;
+          display:flex;align-items:center;gap:12px;border:1px solid var(--bdr);">
+          <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--p),var(--p2));
+            border-radius:50%;display:flex;align-items:center;justify-content:center;
+            color:#fff;font-size:14px;cursor:pointer;flex-shrink:0;">▶</div>
+          <div style="flex:1;">
+            <div style="height:5px;background:var(--bdr);border-radius:var(--r-full);overflow:hidden;">
+              <div style="width:40%;height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:var(--r-full);"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;">
+              <span style="font-size:10px;color:var(--t3);">0:13</span>
+              <span style="font-size:10px;color:var(--t3);">0:34</span>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--t3);font-weight:600;">🎙️</div>
+        </div>
+      </div>
+      <div class="post-act">
+        <div class="post-act-btn"><span>❤️</span><span>3</span></div>
+        <div class="post-act-btn"><span>💬</span><span>1</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Bottom Nav -->
+  <div class="bnav">
+    <div class="ni active" onclick="goTo('s-home')"><div class="ni-ico">🏠</div><div class="ni-lbl">Home</div></div>
+    <div class="ni" onclick="goTo('s-family-tree')"><div class="ni-ico">🌳</div><div class="ni-lbl">Tree</div></div>
+    <div class="ni ni-center" onclick="goTo('s-create-post')">
+      <div class="ni-ico-wrap">✏️</div>
+      <div class="ni-lbl" style="color:var(--p);">Post</div>
+    </div>
+    <div class="ni" onclick="goTo('s-events')"><div class="ni-ico">📅</div><div class="ni-lbl">Events</div></div>
+    <div class="ni" onclick="goTo('s-profile')"><div class="ni-ico">👤</div><div class="ni-lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ POST DETAIL ═══ -->
+<div id="s-post-detail" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;">
+      <div class="back-btn" onclick="goTo('s-home')">‹</div>
+      <span class="nav-title">Post</span>
+    </div>
+    <div class="post-card">
+      <div class="post-hdr">
+        <div class="av av-teal" style="width:44px;height:44px;font-size:16px;">MM</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--t1);">Miraz Madbor</div>
+          <div style="font-size:11.5px;color:var(--t3);">2 hours ago · The Madbor Family</div>
+        </div>
+      </div>
+      <div style="padding:0 14px 12px;font-size:14.5px;color:var(--t2);line-height:1.65;">
+        Just came back from the market to find Tawsia's new drawing on the fridge. Our little artist! 🎨</div>
+      <div style="height:220px;background:linear-gradient(135deg,var(--ps),var(--rose-s),var(--teal-s));
+        display:flex;align-items:center;justify-content:center;font-size:80px;">🎨</div>
+      <!-- Reactions -->
+      <div style="padding:12px 14px;border-bottom:1px solid var(--bdr2);">
+        <div style="display:flex;gap:6px;align-items:center;">
+          <div style="display:flex;">
+            <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--surf);
+              background:var(--rose-s);display:flex;align-items:center;justify-content:center;
+              font-size:11px;margin-right:-5px;">❤️</div>
+            <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--surf);
+              background:var(--gold-s);display:flex;align-items:center;justify-content:center;font-size:11px;">😍</div>
+          </div>
+          <div style="font-size:12px;color:var(--t2);margin-left:3px;">Nasima, Mary and 2 others</div>
+        </div>
+      </div>
+      <div class="post-act">
+        <div class="post-act-btn" style="color:var(--rose);font-weight:600;">❤️ Loved</div>
+        <div class="post-act-btn">💬 Comment</div>
+        <div class="post-act-btn">↗️ Share</div>
+      </div>
+    </div>
+    <!-- Comments -->
+    <div class="sh" style="margin-bottom:10px;"><div class="sh-title">Comments</div></div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div class="av av-rose" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">N</div>
+        <div style="background:var(--surf);border-radius:var(--r-md);padding:11px 14px;
+          flex:1;box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+          <div style="font-size:13px;font-weight:700;color:var(--t1);">Nasima</div>
+          <div style="font-size:13.5px;color:var(--t2);margin-top:3px;line-height:1.5;">
+            MashaAllah! Our granddaughter is so talented! 😭❤️</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:6px;">1 hour ago · ❤️ 2</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <div class="av av-gold" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">M</div>
+        <div style="background:var(--surf);border-radius:var(--r-md);padding:11px 14px;
+          flex:1;box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+          <div style="font-size:13px;font-weight:700;color:var(--t1);">Mary</div>
+          <div style="font-size:13.5px;color:var(--t2);margin-top:3px;line-height:1.5;">
+            So cute!!! Future artist confirmed 🎨🌟</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:6px;">45 min ago · ❤️ 1</div>
+        </div>
+      </div>
+    </div>
+    <!-- Add comment -->
+    <div style="display:flex;gap:10px;align-items:center;">
+      <div class="av av-p" style="width:36px;height:36px;font-size:13px;flex-shrink:0;">MO</div>
+      <div style="flex:1;background:var(--surf);border-radius:var(--r-full);
+        padding:12px 16px;border:1.5px solid var(--bdr);font-size:14px;
+        color:var(--t3);cursor:pointer;">Add a comment…</div>
+      <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--p),var(--p2));
+        border-radius:50%;display:flex;align-items:center;justify-content:center;
+        color:#fff;font-size:17px;cursor:pointer;flex-shrink:0;box-shadow:0 4px 12px rgba(91,79,207,.3);">→</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ CREATE POST ═══ -->
+<div id="s-create-post" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;justify-content:space-between;">
+      <div class="back-btn" onclick="goTo('s-home')">‹</div>
+      <span class="nav-title">New Post</span>
+      <div class="btn btn-p" style="padding:9px 18px;min-height:36px;font-size:14px;" onclick="goTo('s-home')">Share</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="av av-p" style="width:48px;height:48px;font-size:17px;">MO</div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--t1);">Mohini Sultana Mukta</div>
+        <div class="tag tag-p" style="margin-top:4px;cursor:pointer;">🔒 The Madbor Family ▾</div>
+      </div>
+    </div>
+    <textarea class="inp" style="min-height:120px;resize:none;line-height:1.65;font-size:15px;"
+      placeholder="Share something with your family…"></textarea>
+    <!-- Attached media placeholder -->
+    <div style="background:var(--surf);border-radius:var(--r-lg);padding:16px;border:1px solid var(--bdr2);">
+      <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px;">Add to your post</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:7px;padding:9px 14px;background:var(--ps);
+          border-radius:var(--r-md);cursor:pointer;">
+          <span style="font-size:16px;">📷</span><span style="font-size:12.5px;font-weight:600;color:var(--p);">Photo</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:9px 14px;background:var(--rose-s);
+          border-radius:var(--r-md);cursor:pointer;">
+          <span style="font-size:16px;">🎥</span><span style="font-size:12.5px;font-weight:600;color:var(--rose);">Video</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:9px 14px;background:var(--teal-s);
+          border-radius:var(--r-md);cursor:pointer;">
+          <span style="font-size:16px;">🎙️</span><span style="font-size:12.5px;font-weight:600;color:var(--teal);">Voice</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:9px 14px;background:var(--gold-s);
+          border-radius:var(--r-md);cursor:pointer;">
+          <span style="font-size:16px;">📍</span><span style="font-size:12.5px;font-weight:600;color:var(--gold);">Location</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:9px 14px;background:var(--surf2);
+          border-radius:var(--r-md);cursor:pointer;">
+          <span style="font-size:16px;">😊</span><span style="font-size:12.5px;font-weight:600;color:var(--t2);">Feeling</span>
+        </div>
+      </div>
+    </div>
+    <!-- Mood -->
+    <div style="background:var(--surf);border-radius:var(--r-lg);padding:16px;border:1px solid var(--bdr2);">
+      <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px;">How are you feeling?</div>
+      <div style="display:flex;gap:12px;justify-content:space-around;">
+        <div style="text-align:center;cursor:pointer;"><div style="font-size:28px;">😊</div><div style="font-size:10px;color:var(--t3);margin-top:3px;">Happy</div></div>
+        <div style="text-align:center;cursor:pointer;"><div style="font-size:28px;">❤️</div><div style="font-size:10px;color:var(--t3);margin-top:3px;">Loved</div></div>
+        <div style="text-align:center;cursor:pointer;"><div style="font-size:28px;">😂</div><div style="font-size:10px;color:var(--t3);margin-top:3px;">Funny</div></div>
+        <div style="text-align:center;cursor:pointer;"><div style="font-size:28px;">🙏</div><div style="font-size:10px;color:var(--t3);margin-top:3px;">Grateful</div></div>
+        <div style="text-align:center;cursor:pointer;"><div style="font-size:28px;">😢</div><div style="font-size:10px;color:var(--t3);margin-top:3px;">Sad</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ FAMILY TREE ═══ -->
+<div id="s-family-tree" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div style="padding:0 20px 10px;flex-shrink:0;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:24px;font-weight:800;color:var(--t1);letter-spacing:-.4px;">Family Tree 🌳</div>
+      <div style="font-size:12px;color:var(--t3);margin-top:2px;">The Madbor Family · 6 members</div>
+    </div>
+    <div class="btn btn-p" style="padding:10px 16px;min-height:40px;font-size:13px;" onclick="goTo('s-add-member')">+ Add</div>
+  </div>
+  <!-- Tree visual -->
+  <div style="padding:0 20px 14px;flex-shrink:0;">
+    <div style="background:var(--surf);border-radius:var(--r-xl);padding:20px 16px;
+      box-shadow:var(--sh-md);border:1px solid var(--bdr2);overflow:hidden;">
+      <svg width="100%" height="308" viewBox="0 0 353 308" fill="none">
+        <defs>
+          <linearGradient id="tp" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5B4FCF"/><stop offset="100%" stop-color="#7B70E8"/></linearGradient>
+          <linearGradient id="tr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#D63F7A"/><stop offset="100%" stop-color="#E85F9B"/></linearGradient>
+          <linearGradient id="tt" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0CA678"/><stop offset="100%" stop-color="#14C98A"/></linearGradient>
+          <linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E67700"/><stop offset="100%" stop-color="#FAB005"/></linearGradient>
+          <linearGradient id="tb" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2F9CEB"/><stop offset="100%" stop-color="#4FBDFF"/></linearGradient>
+          <linearGradient id="to" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F76707"/><stop offset="100%" stop-color="#FF922B"/></linearGradient>
+        </defs>
+        <!-- Connection lines -->
+        <line x1="88" y1="62" x2="155" y2="120" stroke="#E5E2F5" stroke-width="2" stroke-dasharray="5 3"/>
+        <line x1="265" y1="62" x2="198" y2="120" stroke="#E5E2F5" stroke-width="2" stroke-dasharray="5 3"/>
+        <line x1="176" y1="148" x2="176" y2="178" stroke="#E5E2F5" stroke-width="2.5"/>
+        <line x1="70" y1="178" x2="282" y2="178" stroke="#E5E2F5" stroke-width="2"/>
+        <line x1="70" y1="178" x2="70" y2="208" stroke="#E5E2F5" stroke-width="2"/>
+        <line x1="176" y1="178" x2="176" y2="208" stroke="#E5E2F5" stroke-width="2"/>
+        <line x1="282" y1="178" x2="282" y2="208" stroke="#E5E2F5" stroke-width="2"/>
+        <line x1="282" y1="242" x2="282" y2="266" stroke="#E5E2F5" stroke-width="2"/>
+        <!-- Marriage symbol -->
+        <line x1="123" y1="133" x2="154" y2="133" stroke="#FAB005" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="135" y="130" font-size="10">💍</text>
+        <!-- Grandparents -->
+        <circle cx="88" cy="44" r="26" fill="url(#tb)"/>
+        <text x="76" y="40" font-size="9" font-weight="700" fill="white" font-family="Inter">Dada</text>
+        <text x="72" y="52" font-size="7.5" fill="rgba(255,255,255,.8)" font-family="Inter">Grandfather</text>
+        <circle cx="265" cy="44" r="26" fill="url(#to)"/>
+        <text x="252" y="40" font-size="9" font-weight="700" fill="white" font-family="Inter">Dadi</text>
+        <text x="249" y="52" font-size="7.5" fill="rgba(255,255,255,.8)" font-family="Inter">Grandmother</text>
+        <!-- Parents -->
+        <circle cx="126" cy="133" r="30" fill="url(#tt)"/>
+        <text x="109" y="129" font-size="10" font-weight="700" fill="white" font-family="Inter">Miraz</text>
+        <text x="110" y="141" font-size="8" fill="rgba(255,255,255,.8)" font-family="Inter">Madbor</text>
+        <text x="115" y="152" font-size="7" fill="rgba(255,255,255,.7)" font-family="Inter">Father</text>
+        <circle cx="226" cy="133" r="30" fill="url(#tr)"/>
+        <text x="212" y="129" font-size="10" font-weight="700" fill="white" font-family="Inter">Nasima</text>
+        <text x="213" y="141" font-size="8" fill="rgba(255,255,255,.8)" font-family="Inter">Madbor</text>
+        <text x="215" y="152" font-size="7" fill="rgba(255,255,255,.7)" font-family="Inter">Mother</text>
+        <!-- Children row -->
+        <circle cx="70" cy="228" r="26" fill="url(#tg)"/>
+        <text x="59" y="224" font-size="10" font-weight="700" fill="white" font-family="Inter">Mary</text>
+        <text x="56" y="235" font-size="7.5" fill="rgba(255,255,255,.8)" font-family="Inter">Sister</text>
+        <!-- Mohini - highlighted with ring -->
+        <circle cx="176" cy="228" r="30" fill="url(#tp)"/>
+        <circle cx="176" cy="228" r="34" fill="none" stroke="var(--p)" stroke-width="2.5" stroke-dasharray="5 3"/>
+        <text x="160" y="224" font-size="10" font-weight="700" fill="white" font-family="Inter">Mohini</text>
+        <text x="166" y="235" font-size="8" fill="rgba(255,255,255,.8)" font-family="Inter">You ⭐</text>
+        <circle cx="282" cy="228" r="26" fill="url(#tb)"/>
+        <text x="264" y="224" font-size="9" font-weight="700" fill="white" font-family="Inter">Abdullah</text>
+        <text x="268" y="235" font-size="7.5" fill="rgba(255,255,255,.8)" font-family="Inter">Brother</text>
+        <!-- Tawsia (nephew of Mohini, son of Abdullah) -->
+        <circle cx="282" cy="286" r="22" fill="url(#to)"/>
+        <text x="267" y="283" font-size="9" font-weight="700" fill="white" font-family="Inter">Tawsia</text>
+        <text x="267" y="293" font-size="7.5" fill="rgba(255,255,255,.8)" font-family="Inter">Nephew</text>
+      </svg>
+    </div>
+  </div>
+  <!-- Members list -->
+  <div style="padding:0 20px;flex-shrink:0;">
+    <div class="sh"><div class="sh-title">All Members</div></div>
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <div onclick="goTo('s-member-profile')" style="display:flex;align-items:center;gap:12px;background:var(--surf);
+        padding:13px 14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);cursor:pointer;">
+        <div class="av av-teal" style="width:46px;height:46px;font-size:16px;">MM</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--t1);">Miraz Madbor</div><div style="font-size:12px;color:var(--t3);">Father · Age 52</div></div>
+        <div class="tag tag-teal" style="font-size:10px;">Online</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--surf);
+        padding:13px 14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+        <div class="av av-rose" style="width:46px;height:46px;font-size:16px;">N</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--t1);">Nasima</div><div style="font-size:12px;color:var(--t3);">Mother · 🎂 Birthday Mar 18</div></div>
+        <div class="tag tag-rose" style="font-size:10px;">🎂 Soon</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--surf);
+        padding:13px 14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+        <div class="av av-gold" style="width:46px;height:46px;font-size:16px;">M</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--t1);">Mary</div><div style="font-size:12px;color:var(--t3);">Sister</div></div>
+        <div class="tag tag-p" style="font-size:10px;">Active</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--surf);
+        padding:13px 14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+        <div class="av av-blue" style="width:46px;height:46px;font-size:16px;">A</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--t1);">Abdullah</div><div style="font-size:12px;color:var(--t3);">Brother</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--surf);
+        padding:13px 14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+        <div class="av av-orange" style="width:46px;height:46px;font-size:16px;">T</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--t1);">Tawsia</div><div style="font-size:12px;color:var(--t3);">Nephew · Age 7</div></div>
+        <div class="tag tag-gold" style="font-size:10px;">Child 👦</div>
+      </div>
+    </div>
+  </div>
+  <div class="bnav" style="margin-top:16px;">
+    <div class="ni" onclick="goTo('s-home')"><div class="ni-ico">🏠</div><div class="ni-lbl">Home</div></div>
+    <div class="ni active" onclick="goTo('s-family-tree')"><div class="ni-ico">🌳</div><div class="ni-lbl">Tree</div></div>
+    <div class="ni ni-center" onclick="goTo('s-create-post')"><div class="ni-ico-wrap">✏️</div><div class="ni-lbl" style="color:var(--t3);">Post</div></div>
+    <div class="ni" onclick="goTo('s-events')"><div class="ni-ico">📅</div><div class="ni-lbl">Events</div></div>
+    <div class="ni" onclick="goTo('s-profile')"><div class="ni-ico">👤</div><div class="ni-lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ ADD MEMBER ═══ -->
+<div id="s-add-member" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;">
+      <div class="back-btn" onclick="goTo('s-family-tree')">‹</div>
+      <span class="nav-title">Add Member</span>
+    </div>
+    <div style="background:linear-gradient(135deg,var(--ps),var(--rose-s));border-radius:var(--r-lg);
+      padding:20px;text-align:center;border:1px solid var(--pb);">
+      <div style="font-size:36px;margin-bottom:8px;">👨‍👩‍👧</div>
+      <div style="font-size:16px;font-weight:700;color:var(--p);">Invite to The Madbor Family</div>
+      <div style="font-size:13px;color:var(--t2);margin-top:4px;">They'll receive a secure, private invite link</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:13px;">
+      <div class="inp-wrap">
+        <div class="inp-lbl">Full Name</div>
+        <input class="inp" placeholder="Member's full name" style="background:var(--surf);"/>
+      </div>
+      <div class="inp-wrap">
+        <div class="inp-lbl">Phone or Email</div>
+        <input class="inp" placeholder="Phone number or email address" style="background:var(--surf);"/>
+      </div>
+      <div class="inp-wrap">
+        <div class="inp-lbl">Relationship</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+          <div class="role-chip" onclick="selChip(this)">Father</div>
+          <div class="role-chip" onclick="selChip(this)">Mother</div>
+          <div class="role-chip" onclick="selChip(this)">Brother</div>
+          <div class="role-chip" onclick="selChip(this)">Sister</div>
+          <div class="role-chip" onclick="selChip(this)">Son</div>
+          <div class="role-chip" onclick="selChip(this)">Daughter</div>
+          <div class="role-chip" onclick="selChip(this)">Nephew</div>
+          <div class="role-chip" onclick="selChip(this)">Grandparent</div>
+          <div class="role-chip" onclick="selChip(this)">Other</div>
+        </div>
+      </div>
+      <!-- Invite via -->
+      <div style="background:var(--surf);border-radius:var(--r-lg);padding:16px;border:1px solid var(--bdr2);">
+        <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px;">Send invite via</div>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;padding:12px 8px;background:var(--teal-s);border-radius:var(--r-md);text-align:center;cursor:pointer;">
+            <div style="font-size:20px;">📱</div><div style="font-size:11px;font-weight:600;color:var(--teal);margin-top:3px;">SMS</div>
+          </div>
+          <div style="flex:1;padding:12px 8px;background:var(--ps);border-radius:var(--r-md);text-align:center;cursor:pointer;">
+            <div style="font-size:20px;">📧</div><div style="font-size:11px;font-weight:600;color:var(--p);margin-top:3px;">Email</div>
+          </div>
+          <div style="flex:1;padding:12px 8px;background:#E8F5EE;border-radius:var(--r-md);text-align:center;cursor:pointer;">
+            <div style="font-size:20px;">💬</div><div style="font-size:11px;font-weight:600;color:#2ECC71;margin-top:3px;">WhatsApp</div>
+          </div>
+          <div style="flex:1;padding:12px 8px;background:var(--gold-s);border-radius:var(--r-md);text-align:center;cursor:pointer;">
+            <div style="font-size:20px;">🔗</div><div style="font-size:11px;font-weight:600;color:var(--gold);margin-top:3px;">Link</div>
+          </div>
+        </div>
+      </div>
+      <div class="btn btn-p btn-full" onclick="goTo('s-family-tree')">Send Invite ✉️</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ MEMBER PROFILE ═══ -->
+<div id="s-member-profile" class="screen" style="background:var(--bg);">
+  <!-- Hero -->
+  <div style="background:linear-gradient(160deg,var(--teal),#14C98A);padding:54px 20px 72px;position:relative;flex-shrink:0;">
+    <div class="back-btn" onclick="goTo('s-family-tree')" style="background:rgba(255,255,255,.22);border:none;color:#fff;
+      backdrop-filter:blur(8px);margin-bottom:20px;">‹</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <div class="av av-teal" style="width:84px;height:84px;font-size:30px;
+        border:3.5px solid rgba(255,255,255,.75);box-shadow:0 6px 24px rgba(0,0,0,.15);">MM</div>
+      <div style="text-align:center;">
+        <div style="font-size:23px;font-weight:800;color:#fff;">Miraz Madbor</div>
+        <div style="font-size:13.5px;color:rgba(255,255,255,.82);margin-top:3px;">Father · Age 52</div>
+      </div>
+      <div class="tag" style="background:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(4px);">🟢 Online now</div>
+    </div>
+  </div>
+  <!-- Pull-up sheet -->
+  <div style="background:var(--bg);border-radius:28px 28px 0 0;margin-top:-26px;
+    padding:24px 20px 0;flex:1;flex-shrink:0;">
+    <!-- Quick actions -->
+    <div style="display:flex;justify-content:space-around;margin-bottom:20px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;" onclick="goTo('s-chat')">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:18px;
+          display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px rgba(91,79,207,.28);">💬</div>
+        <span style="font-size:11px;font-weight:600;color:var(--t2);">Message</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,var(--teal),#14C98A);border-radius:18px;
+          display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px rgba(12,166,120,.25);">📞</div>
+        <span style="font-size:11px;font-weight:600;color:var(--t2);">Call</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;" onclick="goTo('s-emergency')">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,var(--red),#F05252);border-radius:18px;
+          display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px rgba(224,49,49,.25);">🚨</div>
+        <span style="font-size:11px;font-weight:600;color:var(--t2);">Alert</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;" onclick="goTo('s-memories')">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,var(--rose),#E85F9B);border-radius:18px;
+          display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px rgba(214,63,122,.25);">📸</div>
+        <span style="font-size:11px;font-weight:600;color:var(--t2);">Memories</span>
+      </div>
+    </div>
+    <!-- Info card -->
+    <div class="card" style="padding:16px;margin-bottom:14px;">
+      <div style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:14px;">About</div>
+      <div style="display:flex;flex-direction:column;gap:11px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:var(--t3);">Birthday</span>
+          <span style="font-size:13px;font-weight:600;color:var(--t1);">June 12, 1972</span>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:var(--t3);">Hometown</span>
+          <span style="font-size:13px;font-weight:600;color:var(--t1);">Comilla, Bangladesh</span>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:var(--t3);">Member since</span>
+          <span style="font-size:13px;font-weight:600;color:var(--t1);">March 2024</span>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:var(--t3);">Posts shared</span>
+          <span style="font-size:13px;font-weight:600;color:var(--p);">47 posts</span>
+        </div>
+      </div>
+    </div>
+    <!-- Shared memories -->
+    <div class="sh"><div class="sh-title">Shared Memories</div><div class="sh-action">See all</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding-bottom:20px;">
+      <div style="height:84px;background:linear-gradient(135deg,var(--teal-s),#B2F0ED);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;">🏡</div>
+      <div style="height:84px;background:linear-gradient(135deg,var(--rose-s),#FFD6E7);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;">🎂</div>
+      <div style="height:84px;background:linear-gradient(135deg,var(--gold-s),#FFE0B2);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;">🌴</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ EVENTS ═══ -->
+<div id="s-events" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div style="padding:0 20px 12px;flex-shrink:0;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:24px;font-weight:800;color:var(--t1);letter-spacing:-.4px;">Events 📅</div>
+      <div style="font-size:12px;color:var(--t3);margin-top:2px;">March 2026</div>
+    </div>
+    <div class="btn btn-p" style="padding:10px 16px;min-height:40px;font-size:13px;" onclick="goTo('s-create-event')">+ New</div>
+  </div>
+  <!-- Month strip -->
+  <div style="padding:0 20px 12px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;-ms-overflow-style:none;scrollbar-width:none;">
+    <div style="flex-shrink:0;padding:7px 15px;background:var(--surf2);border-radius:var(--r-full);font-size:12px;font-weight:600;color:var(--t3);cursor:pointer;">Jan</div>
+    <div style="flex-shrink:0;padding:7px 15px;background:var(--surf2);border-radius:var(--r-full);font-size:12px;font-weight:600;color:var(--t3);cursor:pointer;">Feb</div>
+    <div style="flex-shrink:0;padding:7px 16px;background:var(--p);border-radius:var(--r-full);font-size:12px;font-weight:700;color:#fff;cursor:pointer;">Mar</div>
+    <div style="flex-shrink:0;padding:7px 15px;background:var(--surf2);border-radius:var(--r-full);font-size:12px;font-weight:600;color:var(--t3);cursor:pointer;">Apr</div>
+    <div style="flex-shrink:0;padding:7px 15px;background:var(--surf2);border-radius:var(--r-full);font-size:12px;font-weight:600;color:var(--t3);cursor:pointer;">May</div>
+  </div>
+  <!-- Calendar -->
+  <div style="padding:0 20px 14px;flex-shrink:0;">
+    <div style="background:var(--surf);border-radius:var(--r-xl);padding:18px 16px;
+      box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+      <!-- Day headers -->
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px;">
+        <div class="cal-head">Su</div><div class="cal-head">Mo</div>
+        <div class="cal-head">Tu</div><div class="cal-head">We</div>
+        <div class="cal-head">Th</div><div class="cal-head">Fr</div>
+        <div class="cal-head">Sa</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">
+        <div></div><div></div><div></div><div></div><div></div><div></div>
+        <div class="cal-d"><span style="font-size:13px;font-weight:500;color:var(--t2);">1</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">2</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">3</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">4</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">5</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">6</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">7</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">8</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">9</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">10</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">11</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">12</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">13</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">14</span></div>
+        <div class="cal-d today"><span style="font-size:13px;font-weight:700;color:#fff;">15</span><div class="cal-dot"></div></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">16</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">17</span></div>
+        <div class="cal-d has-evt" onclick="goTo('s-event-detail')" style="cursor:pointer;">
+          <span style="font-size:13px;font-weight:700;color:var(--p);">18</span>
+          <div class="cal-dot"></div>
+        </div>
+        <div class="cal-d has-evt" style="cursor:pointer;">
+          <span style="font-size:13px;font-weight:600;color:var(--p);">19</span>
+          <div class="cal-dot" style="background:var(--p);"></div>
+        </div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">20</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">21</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">22</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">23</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">24</span></div>
+        <div class="cal-d has-evt" style="cursor:pointer;">
+          <span style="font-size:13px;font-weight:600;color:var(--p);">25</span>
+          <div class="cal-dot" style="background:var(--gold);"></div>
+        </div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">26</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">27</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">28</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">29</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">30</span></div>
+        <div class="cal-d"><span style="font-size:13px;color:var(--t2);">31</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Upcoming -->
+  <div style="padding:0 20px;flex-shrink:0;">
+    <div class="sh"><div class="sh-title">Upcoming Events</div></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div onclick="goTo('s-event-detail')" style="display:flex;gap:14px;align-items:center;background:var(--surf);
+        padding:15px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border-left:4px solid var(--rose);cursor:pointer;border:1px solid var(--bdr2);border-left-width:4px;">
+        <div style="text-align:center;min-width:42px;">
+          <div style="font-size:18px;font-weight:800;color:var(--rose);line-height:1;">18</div>
+          <div style="font-size:9.5px;color:var(--t3);font-weight:600;letter-spacing:.5px;">MAR</div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--t1);">Amma's Birthday 🎂</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px;">Nasima Madbor · All family invited</div>
+        </div>
+        <div class="tag tag-rose" style="font-size:10px;">3 days</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:center;background:var(--surf);
+        padding:15px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);border-left:4px solid var(--p);cursor:pointer;">
+        <div style="text-align:center;min-width:42px;">
+          <div style="font-size:18px;font-weight:800;color:var(--p);line-height:1;">19</div>
+          <div style="font-size:9.5px;color:var(--t3);font-weight:600;letter-spacing:.5px;">MAR</div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--t1);">Family Lunch Gathering 🍛</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px;">Home · 1:00 PM</div>
+        </div>
+        <div class="tag tag-p" style="font-size:10px;">4 days</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:center;background:var(--surf);
+        padding:15px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);border-left:4px solid var(--gold);cursor:pointer;">
+        <div style="text-align:center;min-width:42px;">
+          <div style="font-size:18px;font-weight:800;color:var(--gold);line-height:1;">25</div>
+          <div style="font-size:9.5px;color:var(--t3);font-weight:600;letter-spacing:.5px;">MAR</div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--t1);">Tawsia's School Play 🎭</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px;">Dhaka School · 4:00 PM</div>
+        </div>
+        <div class="tag tag-gold" style="font-size:10px;">10 days</div>
+      </div>
+    </div>
+  </div>
+  <div class="bnav" style="margin-top:16px;">
+    <div class="ni" onclick="goTo('s-home')"><div class="ni-ico">🏠</div><div class="ni-lbl">Home</div></div>
+    <div class="ni" onclick="goTo('s-family-tree')"><div class="ni-ico">🌳</div><div class="ni-lbl">Tree</div></div>
+    <div class="ni ni-center" onclick="goTo('s-create-post')"><div class="ni-ico-wrap">✏️</div><div class="ni-lbl" style="color:var(--t3);">Post</div></div>
+    <div class="ni active" onclick="goTo('s-events')"><div class="ni-ico">📅</div><div class="ni-lbl">Events</div></div>
+    <div class="ni" onclick="goTo('s-profile')"><div class="ni-ico">👤</div><div class="ni-lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ CREATE EVENT ═══ -->
+<div id="s-create-event" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;">
+      <div class="back-btn" onclick="goTo('s-events')">‹</div>
+      <span class="nav-title">New Event</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:13px;">
+      <div class="inp-wrap">
+        <div class="inp-lbl">Event Title</div>
+        <input class="inp" placeholder="e.g. Amma's Birthday Party 🎂" style="background:var(--surf);"/>
+      </div>
+      <!-- Type chips -->
+      <div class="inp-wrap">
+        <div class="inp-lbl">Type</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+          <div class="role-chip sel" onclick="selChip(this)">🎂 Birthday</div>
+          <div class="role-chip" onclick="selChip(this)">💍 Anniversary</div>
+          <div class="role-chip" onclick="selChip(this)">🍽️ Gathering</div>
+          <div class="role-chip" onclick="selChip(this)">✈️ Trip</div>
+          <div class="role-chip" onclick="selChip(this)">🎓 Education</div>
+          <div class="role-chip" onclick="selChip(this)">🙏 Religious</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <div class="inp-wrap" style="flex:1;">
+          <div class="inp-lbl">Date</div>
+          <input class="inp" placeholder="Mar 18, 2026" value="Mar 18, 2026" style="background:var(--surf);"/>
+        </div>
+        <div class="inp-wrap" style="flex:1;">
+          <div class="inp-lbl">Time</div>
+          <input class="inp" placeholder="6:00 PM" value="6:00 PM" style="background:var(--surf);"/>
+        </div>
+      </div>
+      <div class="inp-wrap">
+        <div class="inp-lbl">Location</div>
+        <input class="inp" placeholder="📍 Venue or address" style="background:var(--surf);"/>
+      </div>
+      <div class="inp-wrap">
+        <div class="inp-lbl">Description <span style="color:var(--t3);font-weight:400;">(optional)</span></div>
+        <textarea class="inp" style="resize:none;min-height:80px;" placeholder="What should family expect?"></textarea>
+      </div>
+      <!-- Invited members -->
+      <div class="card" style="padding:16px;">
+        <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px;">Invited Members</div>
+        <div style="display:flex;gap:-6px;margin-bottom:8px;">
+          <div class="av av-p" style="width:34px;height:34px;font-size:11px;border:2.5px solid var(--surf);margin-right:-6px;">MO</div>
+          <div class="av av-teal" style="width:34px;height:34px;font-size:11px;border:2.5px solid var(--surf);margin-right:-6px;">MM</div>
+          <div class="av av-rose" style="width:34px;height:34px;font-size:11px;border:2.5px solid var(--surf);margin-right:-6px;">N</div>
+          <div class="av av-gold" style="width:34px;height:34px;font-size:11px;border:2.5px solid var(--surf);margin-right:-6px;">M</div>
+          <div class="av av-blue" style="width:34px;height:34px;font-size:11px;border:2.5px solid var(--surf);margin-right:-6px;">A</div>
+          <div class="av av-orange" style="width:34px;height:34px;font-size:11px;border:2.5px solid var(--surf);">T</div>
+        </div>
+        <div style="font-size:12px;color:var(--t3);">All 6 family members invited</div>
+      </div>
+      <!-- Auto album toggle -->
+      <div style="display:flex;align-items:center;justify-content:space-between;
+        background:var(--surf);border-radius:var(--r-lg);padding:15px 16px;border:1px solid var(--bdr2);">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--t1);">📸 Auto-create photo album</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px;">Collect all event photos automatically</div>
+        </div>
+        <div class="toggle toggle-on" onclick="togSwitch(this)"><div class="toggle-dot"></div></div>
+      </div>
+      <div class="btn btn-p btn-full" onclick="goTo('s-event-detail')">Create Event 🎉</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ EVENT DETAIL ═══ -->
+<div id="s-event-detail" class="screen" style="background:var(--bg);">
+  <!-- Hero -->
+  <div style="background:linear-gradient(160deg,var(--rose),#E85F9B);padding:54px 20px 72px;
+    position:relative;flex-shrink:0;overflow:hidden;">
+    <div style="position:absolute;right:-20px;top:-20px;width:120px;height:120px;
+      border-radius:50%;background:rgba(255,255,255,.09);"></div>
+    <div style="position:absolute;right:40px;bottom:-30px;width:90px;height:90px;
+      border-radius:50%;background:rgba(255,255,255,.06);"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+      <div class="back-btn" onclick="goTo('s-events')" style="background:rgba(255,255,255,.22);border:none;color:#fff;backdrop-filter:blur(8px);">‹</div>
+      <div class="tag" style="background:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(4px);">🎂 Birthday</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:52px;margin-bottom:8px;">🎂</div>
+      <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.3px;">Amma's Birthday!</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.82);margin-top:6px;">Nasima Madbor</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:3px;">📅 March 18, 2026 · 6:00 PM · 📍 Home</div>
+    </div>
+  </div>
+  <div style="background:var(--bg);border-radius:28px 28px 0 0;margin-top:-26px;padding:22px 20px;flex:1;flex-shrink:0;">
+    <!-- Countdown -->
+    <div style="background:linear-gradient(135deg,var(--ps),var(--rose-s));border-radius:var(--r-lg);
+      padding:16px;text-align:center;margin-bottom:16px;border:1px solid var(--pb);">
+      <div style="font-size:11px;font-weight:700;color:var(--p);letter-spacing:1px;margin-bottom:8px;">COUNTDOWN</div>
+      <div style="display:flex;justify-content:center;gap:20px;">
+        <div><div style="font-size:30px;font-weight:900;color:var(--t1);">3</div><div style="font-size:10px;color:var(--t3);font-weight:600;letter-spacing:.5px;">DAYS</div></div>
+        <div style="font-size:26px;color:var(--bdr);font-weight:300;align-self:center;">:</div>
+        <div><div style="font-size:30px;font-weight:900;color:var(--t1);">08</div><div style="font-size:10px;color:var(--t3);font-weight:600;letter-spacing:.5px;">HRS</div></div>
+        <div style="font-size:26px;color:var(--bdr);font-weight:300;align-self:center;">:</div>
+        <div><div style="font-size:30px;font-weight:900;color:var(--t1);">22</div><div style="font-size:10px;color:var(--t3);font-weight:600;letter-spacing:.5px;">MIN</div></div>
+      </div>
+    </div>
+    <!-- RSVP -->
+    <div class="card" style="padding:16px;margin-bottom:14px;">
+      <div style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:12px;">Family RSVP</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="av av-p" style="width:36px;height:36px;font-size:12px;">MO</div>
+          <div style="flex:1;font-size:13.5px;font-weight:600;color:var(--t1);">Mohini Sultana Mukta</div>
+          <div class="tag tag-teal" style="font-size:10px;">✓ Going</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="av av-gold" style="width:36px;height:36px;font-size:12px;">M</div>
+          <div style="flex:1;font-size:13.5px;font-weight:600;color:var(--t1);">Mary</div>
+          <div class="tag tag-teal" style="font-size:10px;">✓ Going</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="av av-blue" style="width:36px;height:36px;font-size:12px;">A</div>
+          <div style="flex:1;font-size:13.5px;font-weight:600;color:var(--t1);">Abdullah</div>
+          <div class="tag tag-teal" style="font-size:10px;">✓ Going</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="av av-orange" style="width:36px;height:36px;font-size:12px;">T</div>
+          <div style="flex:1;font-size:13.5px;font-weight:600;color:var(--t1);">Tawsia</div>
+          <div class="tag tag-gold" style="font-size:10px;">? Maybe</div>
+        </div>
+      </div>
+    </div>
+    <!-- CTA -->
+    <div style="display:flex;gap:10px;margin-bottom:14px;">
+      <div class="btn btn-teal" style="flex:1;padding:13px;">✓ Going</div>
+      <div class="btn btn-ghost" style="flex:1;padding:13px;">? Maybe</div>
+    </div>
+    <!-- Album -->
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="font-size:15px;font-weight:700;color:var(--t1);">📸 Event Album</div>
+        <div class="sh-action" onclick="goTo('s-album')">Open →</div>
+      </div>
+      <div style="background:var(--surf2);border-radius:var(--r-md);padding:22px;text-align:center;
+        border:2px dashed var(--bdr);">
+        <div style="font-size:28px;margin-bottom:6px;">📷</div>
+        <div style="font-size:13px;color:var(--t3);">Album auto-creates after event</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ MESSAGES ═══ -->
+<div id="s-messages" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div style="padding:0 20px 12px;flex-shrink:0;">
+    <div style="font-size:24px;font-weight:800;color:var(--t1);letter-spacing:-.4px;">Messages 💬</div>
+    <div style="font-size:12px;color:var(--t3);margin-top:2px;">The Madbor Family</div>
+  </div>
+  <!-- Search -->
+  <div style="padding:0 20px 14px;flex-shrink:0;">
+    <div style="background:var(--surf);border-radius:var(--r-full);padding:12px 18px;
+      display:flex;align-items:center;gap:10px;box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+      <span style="font-size:16px;color:var(--t3);">🔍</span>
+      <span style="font-size:14px;color:var(--t3);">Search messages…</span>
+    </div>
+  </div>
+  <!-- Threads -->
+  <div style="padding:0 20px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;">
+    <!-- Family group -->
+    <div onclick="goTo('s-chat')" style="display:flex;align-items:center;gap:13px;background:var(--surf);
+      padding:15px 14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);
+      cursor:pointer;margin-bottom:6px;">
+      <div style="position:relative;flex-shrink:0;">
+        <div style="width:54px;height:54px;background:linear-gradient(135deg,var(--p),var(--p2));
+          border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:24px;">🏠</div>
+        <div class="badge" style="position:absolute;top:-4px;right:-4px;font-size:9px;min-width:15px;height:15px;">2</div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:15px;font-weight:700;color:var(--t1);">The Madbor Family</div>
+        <div style="font-size:13px;color:var(--t3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+          Nasima: Where should we order the birthday cake?</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px;">2 min ago · 6 members</div>
+      </div>
+    </div>
+    <!-- Individual chats -->
+    <div onclick="goTo('s-chat')" style="display:flex;align-items:center;gap:13px;background:var(--surf);
+      padding:14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);cursor:pointer;margin-bottom:4px;">
+      <div style="position:relative;flex-shrink:0;">
+        <div class="av av-teal" style="width:50px;height:50px;font-size:17px;">MM</div>
+        <div style="width:12px;height:12px;background:var(--teal);border-radius:50%;border:2px solid var(--surf);position:absolute;bottom:0;right:0;"></div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:700;color:var(--t1);">Miraz Madbor <span style="color:var(--t3);font-weight:400;font-size:11px;">· Father</span></div>
+        <div style="font-size:13px;color:var(--t3);margin-top:1px;">Going to the market tomorrow, need anything?</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:10px;color:var(--t3);">11:30 AM</div>
+        <div class="badge" style="margin-top:4px;margin-left:auto;font-size:9px;min-width:15px;height:15px;">1</div>
+      </div>
+    </div>
+    <div onclick="goTo('s-chat')" style="display:flex;align-items:center;gap:13px;background:var(--surf);
+      padding:14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);cursor:pointer;margin-bottom:4px;">
+      <div style="position:relative;flex-shrink:0;">
+        <div class="av av-rose" style="width:50px;height:50px;font-size:17px;">N</div>
+        <div style="width:12px;height:12px;background:var(--teal);border-radius:50%;border:2px solid var(--surf);position:absolute;bottom:0;right:0;"></div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:700;color:var(--t1);">Nasima <span style="color:var(--t3);font-weight:400;font-size:11px;">· Mother</span></div>
+        <div style="font-size:13px;color:var(--t3);margin-top:1px;">Cooking is done! Come home everyone 🍛</div>
+      </div>
+      <div style="font-size:10px;color:var(--t3);flex-shrink:0;">Yesterday</div>
+    </div>
+    <div onclick="goTo('s-chat')" style="display:flex;align-items:center;gap:13px;background:var(--surf);
+      padding:14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);cursor:pointer;margin-bottom:4px;">
+      <div class="av av-gold" style="width:50px;height:50px;font-size:17px;flex-shrink:0;">M</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:700;color:var(--t1);">Mary <span style="color:var(--t3);font-weight:400;font-size:11px;">· Sister</span></div>
+        <div style="font-size:13px;color:var(--t3);margin-top:1px;">🎙️ Voice message · 0:34</div>
+      </div>
+      <div style="font-size:10px;color:var(--t3);flex-shrink:0;">Mon</div>
+    </div>
+    <div onclick="goTo('s-chat')" style="display:flex;align-items:center;gap:13px;background:var(--surf);
+      padding:14px;border-radius:var(--r-lg);box-shadow:var(--sh-sm);border:1px solid var(--bdr2);cursor:pointer;">
+      <div class="av av-blue" style="width:50px;height:50px;font-size:17px;flex-shrink:0;">A</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:700;color:var(--t1);">Abdullah <span style="color:var(--t3);font-weight:400;font-size:11px;">· Brother</span></div>
+        <div style="font-size:13px;color:var(--t3);margin-top:1px;">Ok, I'll come Sunday inshaAllah</div>
+      </div>
+      <div style="font-size:10px;color:var(--t3);flex-shrink:0;">Sun</div>
+    </div>
+  </div>
+  <div class="bnav" style="margin-top:auto;">
+    <div class="ni" onclick="goTo('s-home')"><div class="ni-ico">🏠</div><div class="ni-lbl">Home</div></div>
+    <div class="ni" onclick="goTo('s-family-tree')"><div class="ni-ico">🌳</div><div class="ni-lbl">Tree</div></div>
+    <div class="ni ni-center" onclick="goTo('s-create-post')"><div class="ni-ico-wrap">✏️</div><div class="ni-lbl" style="color:var(--t3);">Post</div></div>
+    <div class="ni active" onclick="goTo('s-messages')"><div class="ni-ico">📅</div><div class="ni-lbl">Messages</div></div>
+    <div class="ni" onclick="goTo('s-profile')"><div class="ni-ico">👤</div><div class="ni-lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ CHAT ═══ -->
+<div id="s-chat" class="screen" style="background:var(--bg);">
+  <!-- Chat nav bar -->
+  <div style="background:var(--surf);padding:54px 16px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="back-btn" onclick="goTo('s-messages')">‹</div>
+      <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--p),var(--p2));
+        border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🏠</div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:700;color:var(--t1);">The Madbor Family</div>
+        <div style="font-size:11.5px;color:var(--teal);font-weight:600;">🟢 6 members active</div>
+      </div>
+      <div style="font-size:20px;cursor:pointer;color:var(--t3);">📞</div>
+      <div style="font-size:20px;cursor:pointer;color:var(--t3);">ⓘ</div>
+    </div>
+  </div>
+  <!-- Messages -->
+  <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;">
+    <div style="text-align:center;">
+      <span style="background:var(--surf2);color:var(--t3);font-size:11px;font-weight:600;
+        padding:4px 14px;border-radius:var(--r-full);border:1px solid var(--bdr);">Today</span>
+    </div>
+    <!-- Incoming – Nasima -->
+    <div style="display:flex;gap:8px;align-items:flex-end;">
+      <div class="av av-rose" style="width:30px;height:30px;font-size:10px;flex-shrink:0;">N</div>
+      <div>
+        <div style="font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:500;">Nasima · Mother</div>
+        <div class="bubble-in">Where should we order the birthday cake? 🎂</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px;">10:45 AM</div>
+      </div>
+    </div>
+    <!-- Incoming – Mary -->
+    <div style="display:flex;gap:8px;align-items:flex-end;">
+      <div class="av av-gold" style="width:30px;height:30px;font-size:10px;flex-shrink:0;">M</div>
+      <div>
+        <div style="font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:500;">Mary</div>
+        <div class="bubble-in">Mohini knows a great place in Dhanmondi! 😊</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px;">10:47 AM</div>
+      </div>
+    </div>
+    <!-- Outgoing -->
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+      <div class="bubble-out">Yes! "Cake Garden" is amazing — sending the link 🎉</div>
+      <div style="font-size:10px;color:var(--t3);">10:50 AM · ✓✓</div>
+    </div>
+    <!-- Voice note incoming -->
+    <div style="display:flex;gap:8px;align-items:flex-end;">
+      <div class="av av-teal" style="width:30px;height:30px;font-size:10px;flex-shrink:0;">MM</div>
+      <div>
+        <div style="font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:500;">Baba · Father</div>
+        <div style="background:var(--surf);border-radius:18px 18px 18px 4px;padding:11px 14px;
+          max-width:200px;box-shadow:var(--sh-sm);border:1px solid var(--bdr2);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--teal),#14C98A);
+              border-radius:50%;display:flex;align-items:center;justify-content:center;
+              color:#fff;font-size:11px;cursor:pointer;flex-shrink:0;">▶</div>
+            <div style="flex:1;"><div style="height:4px;background:var(--bdr2);border-radius:var(--r-full);"></div></div>
+            <span style="font-size:10px;color:var(--t3);">0:15</span>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px;">11:02 AM</div>
+      </div>
+    </div>
+    <!-- Outgoing photo -->
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+      <div style="width:158px;height:118px;background:linear-gradient(135deg,var(--ps),var(--rose-s));
+        border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:44px;cursor:pointer;">🎂</div>
+      <div style="font-size:10px;color:var(--t3);">11:15 AM · ✓✓</div>
+    </div>
+    <!-- Reaction incoming -->
+    <div style="display:flex;gap:8px;align-items:flex-end;">
+      <div class="av av-blue" style="width:30px;height:30px;font-size:10px;flex-shrink:0;">A</div>
+      <div>
+        <div style="font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:500;">Abdullah</div>
+        <div class="bubble-in">Perfect! Amma will love it! ❤️🎂</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px;">11:18 AM</div>
+      </div>
+    </div>
+  </div>
+  <!-- Input bar -->
+  <div style="background:var(--surf);padding:10px 14px 28px;border-top:1px solid var(--bdr);
+    display:flex;gap:9px;align-items:center;flex-shrink:0;">
+    <div style="width:38px;height:38px;background:var(--surf2);border-radius:12px;display:flex;
+      align-items:center;justify-content:center;cursor:pointer;font-size:17px;flex-shrink:0;border:1px solid var(--bdr);">📎</div>
+    <div style="flex:1;background:var(--surf2);border-radius:var(--r-full);padding:11px 16px;
+      font-size:14px;color:var(--t3);border:1px solid var(--bdr);cursor:text;">Message…</div>
+    <div style="width:38px;height:38px;background:var(--surf2);border-radius:12px;display:flex;
+      align-items:center;justify-content:center;cursor:pointer;font-size:17px;flex-shrink:0;border:1px solid var(--bdr);">🎙️</div>
+    <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:50%;
+      display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:17px;
+      flex-shrink:0;box-shadow:0 4px 12px rgba(91,79,207,.3);">→</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ MEMORIES ═══ -->
+<div id="s-memories" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;justify-content:space-between;">
+      <div class="back-btn" onclick="goTo('s-profile')">‹</div>
+      <span class="nav-title">Memories</span>
+      <div style="font-size:24px;cursor:pointer;">+</div>
+    </div>
+    <!-- Year recap banner -->
+    <div style="background:linear-gradient(135deg,var(--p),var(--rose));border-radius:var(--r-xl);
+      padding:18px;cursor:pointer;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-16px;top:-16px;width:100px;height:100px;
+        border-radius:50%;background:rgba(255,255,255,.08);"></div>
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.78);letter-spacing:.8px;">✨ 2025 YEAR IN REVIEW</div>
+      <div style="font-size:18px;font-weight:800;color:#fff;margin-top:4px;">Your Family's Best Moments</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.72);margin-top:3px;">64 photos · 8 events · 12 memories</div>
+      <div style="display:flex;gap:-4px;margin-top:12px;">
+        <div style="width:28px;height:28px;border-radius:8px;border:2px solid rgba(255,255,255,.5);
+          background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;
+          font-size:14px;margin-right:-4px;">🏡</div>
+        <div style="width:28px;height:28px;border-radius:8px;border:2px solid rgba(255,255,255,.5);
+          background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;
+          font-size:14px;margin-right:-4px;">🎂</div>
+        <div style="width:28px;height:28px;border-radius:8px;border:2px solid rgba(255,255,255,.5);
+          background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;
+          font-size:14px;margin-right:-4px;">🌴</div>
+        <div style="width:28px;height:28px;border-radius:8px;border:2px solid rgba(255,255,255,.5);
+          background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;
+          font-size:12px;color:#fff;font-weight:700;">+61</div>
+      </div>
+    </div>
+    <!-- Albums -->
+    <div class="sh"><div class="sh-title">Albums</div><div class="sh-action">See all</div></div>
+    <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-ms-overflow-style:none;scrollbar-width:none;">
+      <div style="flex-shrink:0;cursor:pointer;" onclick="goTo('s-album')">
+        <div style="width:112px;height:112px;background:linear-gradient(135deg,var(--p),var(--p2));
+          border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:7px;">🏡</div>
+        <div style="font-size:12px;font-weight:600;color:var(--t1);padding:0 4px;">Home Life</div>
+        <div style="font-size:11px;color:var(--t3);padding:0 4px;">34 photos</div>
+      </div>
+      <div style="flex-shrink:0;cursor:pointer;" onclick="goTo('s-album')">
+        <div style="width:112px;height:112px;background:linear-gradient(135deg,var(--rose),#E85F9B);
+          border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:7px;">🎂</div>
+        <div style="font-size:12px;font-weight:600;color:var(--t1);padding:0 4px;">Birthdays</div>
+        <div style="font-size:11px;color:var(--t3);padding:0 4px;">28 photos</div>
+      </div>
+      <div style="flex-shrink:0;cursor:pointer;" onclick="goTo('s-album')">
+        <div style="width:112px;height:112px;background:linear-gradient(135deg,var(--teal),#14C98A);
+          border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:7px;">🌴</div>
+        <div style="font-size:12px;font-weight:600;color:var(--t1);padding:0 4px;">Family Trip</div>
+        <div style="font-size:11px;color:var(--t3);padding:0 4px;">22 photos</div>
+      </div>
+      <div style="flex-shrink:0;cursor:pointer;" onclick="goTo('s-album')">
+        <div style="width:112px;height:112px;background:linear-gradient(135deg,var(--gold),#FAB005);
+          border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:7px;">🎓</div>
+        <div style="font-size:12px;font-weight:600;color:var(--t1);padding:0 4px;">Graduation</div>
+        <div style="font-size:11px;color:var(--t3);padding:0 4px;">18 photos</div>
+      </div>
+    </div>
+    <!-- Recent photos -->
+    <div class="sh"><div class="sh-title">Recent Photos</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+      <div style="height:100px;background:linear-gradient(135deg,var(--ps),#D8D4F8);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;">🎨</div>
+      <div style="height:100px;background:linear-gradient(135deg,var(--rose-s),#FFD6E7);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;">🍛</div>
+      <div style="height:100px;background:linear-gradient(135deg,var(--teal-s),#B2F0ED);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;">🏡</div>
+      <div style="height:100px;background:linear-gradient(135deg,var(--gold-s),#FFE0B2);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;">🌳</div>
+      <div style="height:100px;background:linear-gradient(135deg,#E8F0FF,#C5D5FF);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;">🎂</div>
+      <div style="height:100px;background:linear-gradient(135deg,var(--rose-s),var(--ps));border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;">👨‍👩‍👧</div>
+    </div>
+    <!-- Time capsule -->
+    <div style="background:var(--surf);border-radius:var(--r-lg);padding:16px;
+      box-shadow:var(--sh-sm);border:1px solid var(--bdr2);display:flex;align-items:center;gap:14px;cursor:pointer;">
+      <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--p),var(--p2));
+        border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">⏳</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:700;color:var(--t1);">Digital Time Capsule</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px;">Seal a memory to open on a future date</div>
+        <div style="font-size:11.5px;color:var(--p);font-weight:600;margin-top:3px;">2 capsules sealed</div>
+      </div>
+      <div style="font-size:18px;color:var(--t3);">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ ALBUM ═══ -->
+<div id="s-album" class="screen" style="background:var(--bg);">
+  <!-- Album hero -->
+  <div style="background:linear-gradient(160deg,var(--rose),#E85F9B);padding:54px 20px 68px;flex-shrink:0;overflow:hidden;position:relative;">
+    <div style="position:absolute;right:-18px;top:-18px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.08);"></div>
+    <div class="back-btn" onclick="goTo('s-memories')" style="background:rgba(255,255,255,.22);border:none;color:#fff;backdrop-filter:blur(8px);margin-bottom:20px;">‹</div>
+    <div style="text-align:center;">
+      <div style="font-size:46px;margin-bottom:8px;">🎂</div>
+      <div style="font-size:23px;font-weight:800;color:#fff;">Birthdays</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.78);margin-top:4px;">28 photos · Updated Mar 2026</div>
+    </div>
+  </div>
+  <div style="background:var(--bg);border-radius:28px 28px 0 0;margin-top:-26px;padding:22px 20px;flex:1;flex-shrink:0;">
+    <!-- Contributors + add -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.8px;">SHARED BY</div>
+      <div style="display:flex;">
+        <div class="av av-p" style="width:26px;height:26px;font-size:9px;border:2px solid var(--bg);margin-right:-5px;">MO</div>
+        <div class="av av-teal" style="width:26px;height:26px;font-size:9px;border:2px solid var(--bg);margin-right:-5px;">MM</div>
+        <div class="av av-rose" style="width:26px;height:26px;font-size:9px;border:2px solid var(--bg);margin-right:-5px;">N</div>
+        <div class="av av-gold" style="width:26px;height:26px;font-size:9px;border:2px solid var(--bg);">M</div>
+      </div>
+      <div style="margin-left:auto;">
+        <div class="btn btn-p" style="padding:7px 15px;min-height:34px;font-size:12px;" onclick="goTo('s-create-post')">+ Add Photo</div>
+      </div>
+    </div>
+    <!-- Masonry grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="grid-row:span 2;height:218px;background:linear-gradient(135deg,var(--ps),#D8D4F8);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:58px;cursor:pointer;">🎂</div>
+      <div style="height:105px;background:linear-gradient(135deg,var(--rose-s),#FFD6E7);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:38px;cursor:pointer;">🎈</div>
+      <div style="height:105px;background:linear-gradient(135deg,var(--gold-s),#FFE0B2);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:38px;cursor:pointer;">🎁</div>
+      <div style="height:105px;background:linear-gradient(135deg,var(--teal-s),#B2F0ED);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:38px;cursor:pointer;">🥳</div>
+      <div style="height:105px;background:linear-gradient(135deg,#E8F0FF,#C5D5FF);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:38px;cursor:pointer;">🎉</div>
+      <div style="grid-row:span 2;height:218px;background:linear-gradient(135deg,var(--rose-s),var(--ps));border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:58px;cursor:pointer;">👨‍👩‍👧</div>
+      <div style="height:105px;background:linear-gradient(135deg,var(--ps),#C5BAFF);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:38px;cursor:pointer;">🕯️</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PROFILE ═══ -->
+<div id="s-profile" class="screen" style="background:var(--bg);">
+  <!-- Hero -->
+  <div style="background:linear-gradient(160deg,var(--p),var(--p2),var(--rose));padding:54px 20px 76px;flex-shrink:0;position:relative;overflow:hidden;">
+    <div style="position:absolute;right:-24px;top:-24px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.07);"></div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+      <div style="font-size:24px;cursor:pointer;" onclick="goTo('s-settings')">⚙️</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:11px;">
+      <div class="av av-p" style="width:86px;height:86px;font-size:32px;
+        border:3.5px solid rgba(255,255,255,.7);box-shadow:0 6px 24px rgba(0,0,0,.2);">MO</div>
+      <div style="text-align:center;">
+        <div style="font-size:23px;font-weight:800;color:#fff;letter-spacing:-.3px;">Mohini Sultana Mukta</div>
+        <div style="font-size:13.5px;color:rgba(255,255,255,.8);margin-top:3px;">Daughter · The Madbor Family</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.58);margin-top:2px;">201-15-3183 · Daffodil International University</div>
+      </div>
+      <div class="tag" style="background:rgba(255,255,255,.2);color:#fff;backdrop-filter:blur(4px);">⭐ Family Admin</div>
+    </div>
+  </div>
+  <div style="background:var(--bg);border-radius:28px 28px 0 0;margin-top:-26px;padding:22px 20px;flex:1;flex-shrink:0;">
+    <!-- Stats -->
+    <div style="display:flex;justify-content:space-around;background:var(--surf);border-radius:var(--r-lg);
+      padding:16px;box-shadow:var(--sh-sm);border:1px solid var(--bdr2);margin-bottom:18px;">
+      <div style="text-align:center;"><div style="font-size:24px;font-weight:800;color:var(--p);">47</div><div style="font-size:11px;color:var(--t3);">Posts</div></div>
+      <div style="width:1px;background:var(--bdr);"></div>
+      <div style="text-align:center;"><div style="font-size:24px;font-weight:800;color:var(--rose);">148</div><div style="font-size:11px;color:var(--t3);">Photos</div></div>
+      <div style="width:1px;background:var(--bdr);"></div>
+      <div style="text-align:center;"><div style="font-size:24px;font-weight:800;color:var(--teal);">6</div><div style="font-size:11px;color:var(--t3);">Members</div></div>
+      <div style="width:1px;background:var(--bdr);"></div>
+      <div style="text-align:center;"><div style="font-size:24px;font-weight:800;color:var(--gold);">12</div><div style="font-size:11px;color:var(--t3);">Albums</div></div>
+    </div>
+    <!-- Profile actions -->
+    <div class="card" style="overflow:hidden;margin-bottom:16px;">
+      <div onclick="goTo('s-memories')" class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--rose-s);">📸</div>
+          <div><div class="set-title">My Memories</div><div class="set-sub">148 photos, 12 albums</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+      <div onclick="goTo('s-doc-vault')" class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:#E8F0FF;">🔐</div>
+          <div><div class="set-title">Document Vault</div><div class="set-sub">7 secure documents</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+      <div onclick="goTo('s-shared-lists')" class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--teal-s);">📋</div>
+          <div><div class="set-title">Shared Lists</div><div class="set-sub">3 active lists</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+      <div onclick="goTo('s-emergency')" class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--red-s);">🚨</div>
+          <div><div class="set-title">Emergency Alert</div><div class="set-sub">Notify all family instantly</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+      <div onclick="goTo('s-settings')" class="set-row" style="border-bottom:none;">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--ps);">⚙️</div>
+          <div><div class="set-title">Settings</div><div class="set-sub">Privacy, notifications, account</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+    </div>
+  </div>
+  <div class="bnav">
+    <div class="ni" onclick="goTo('s-home')"><div class="ni-ico">🏠</div><div class="ni-lbl">Home</div></div>
+    <div class="ni" onclick="goTo('s-family-tree')"><div class="ni-ico">🌳</div><div class="ni-lbl">Tree</div></div>
+    <div class="ni ni-center" onclick="goTo('s-create-post')"><div class="ni-ico-wrap">✏️</div><div class="ni-lbl" style="color:var(--t3);">Post</div></div>
+    <div class="ni" onclick="goTo('s-events')"><div class="ni-ico">📅</div><div class="ni-lbl">Events</div></div>
+    <div class="ni active" onclick="goTo('s-profile')"><div class="ni-ico">👤</div><div class="ni-lbl">Profile</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ EMERGENCY ═══ -->
+<div id="s-emergency" class="screen" style="background:#FFF5F5;">
+  <div class="sbar" style="background:linear-gradient(135deg,var(--red),#F05252);">
+    <span class="sbar-time" style="color:#fff;">9:41</span><div class="sbar-icons"></div>
+  </div>
+  <div style="background:linear-gradient(135deg,var(--red),#F05252);padding:0 20px 28px;flex-shrink:0;text-align:center;">
+    <div class="back-btn" onclick="goTo('s-home')" style="background:rgba(255,255,255,.22);border:none;
+      color:#fff;display:inline-flex;margin-bottom:12px;backdrop-filter:blur(8px);">‹</div>
+    <div style="font-size:27px;font-weight:800;color:#fff;">🚨 Emergency Alert</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.82);margin-top:4px;">Instantly notify your entire family</div>
+  </div>
+  <div style="padding:24px 20px;flex:1;flex-shrink:0;">
+    <!-- SOS button -->
+    <div style="text-align:center;margin-bottom:24px;position:relative;height:170px;display:flex;align-items:center;justify-content:center;">
+      <div class="pring" style="width:150px;height:150px;animation-delay:0s;"></div>
+      <div class="pring" style="width:130px;height:130px;animation-delay:.5s;"></div>
+      <div onclick="sendSOS()" style="width:112px;height:112px;background:linear-gradient(135deg,var(--red),#F05252);
+        border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+        cursor:pointer;box-shadow:0 8px 32px rgba(224,49,49,.45);gap:4px;position:relative;z-index:2;">
+        <div style="font-size:36px;">🆘</div>
+        <div style="font-size:12px;font-weight:800;color:#fff;letter-spacing:1.5px;">SOS</div>
+      </div>
+    </div>
+    <!-- Alert types -->
+    <div class="card" style="padding:16px;margin-bottom:14px;">
+      <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:12px;">Alert Type</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+        <div style="padding:13px;background:var(--red-s);border-radius:var(--r-md);text-align:center;cursor:pointer;border:2px solid var(--red);">
+          <div style="font-size:22px;margin-bottom:4px;">🚨</div><div style="font-size:12px;font-weight:700;color:var(--red);">Emergency</div>
+        </div>
+        <div style="padding:13px;background:var(--gold-s);border-radius:var(--r-md);text-align:center;cursor:pointer;border:2px solid var(--bdr);">
+          <div style="font-size:22px;margin-bottom:4px;">⚕️</div><div style="font-size:12px;font-weight:600;color:var(--gold);">Medical</div>
+        </div>
+        <div style="padding:13px;background:var(--ps);border-radius:var(--r-md);text-align:center;cursor:pointer;border:2px solid var(--bdr);">
+          <div style="font-size:22px;margin-bottom:4px;">📍</div><div style="font-size:12px;font-weight:600;color:var(--p);">Location</div>
+        </div>
+        <div style="padding:13px;background:var(--teal-s);border-radius:var(--r-md);text-align:center;cursor:pointer;border:2px solid var(--bdr);">
+          <div style="font-size:22px;margin-bottom:4px;">✅</div><div style="font-size:12px;font-weight:600;color:var(--teal);">Check-in</div>
+        </div>
+      </div>
+    </div>
+    <!-- Recipients -->
+    <div class="card" style="padding:16px;margin-bottom:14px;">
+      <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:12px;">Alerting</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;"><div class="av av-teal" style="width:36px;height:36px;font-size:12px;">MM</div><div style="flex:1;font-size:13.5px;font-weight:600;color:var(--t1);">Miraz Madbor</div><div style="width:22px;height:22px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;">✓</div></div>
+        <div class="divider"></div>
+        <div style="display:flex;align-items:center;gap:10px;"><div class="av av-rose" style="width:36px;height:36px;font-size:12px;">N</div><div style="flex:1;font-size:13.5px;font-weight:600;color:var(--t1);">Nasima</div><div style="width:22px;height:22px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;">✓</div></div>
+        <div class="divider"></div>
+        <div style="display:flex;align-items:center;gap:10px;"><div class="av av-blue" style="width:36px;height:36px;font-size:12px;">A</div><div style="flex:1;font-size:13.5px;font-weight:600;color:var(--t1);">Abdullah</div><div style="width:22px;height:22px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;">✓</div></div>
+      </div>
+    </div>
+    <!-- Location -->
+    <div style="display:flex;align-items:center;justify-content:space-between;
+      background:var(--surf);border-radius:var(--r-lg);padding:15px 16px;border:1px solid var(--bdr2);">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:22px;">📍</div>
+        <div><div style="font-size:14px;font-weight:600;color:var(--t1);">Share Live Location</div><div style="font-size:12px;color:var(--t3);margin-top:1px;">Include current location with alert</div></div>
+      </div>
+      <div class="toggle toggle-on" onclick="togSwitch(this)"><div class="toggle-dot"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ DOCUMENT VAULT ═══ -->
+<div id="s-doc-vault" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;">
+      <div class="back-btn" onclick="goTo('s-profile')">‹</div>
+      <span class="nav-title">Document Vault</span>
+    </div>
+    <!-- Lock banner -->
+    <div style="background:linear-gradient(135deg,#18152B,#2D1B54);border-radius:var(--r-xl);padding:18px;text-align:center;">
+      <div style="font-size:34px;margin-bottom:8px;">🔐</div>
+      <div style="font-size:16px;font-weight:700;color:#fff;">Secure Family Vault</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.55);margin-top:4px;">End-to-end encrypted · Family eyes only</div>
+    </div>
+    <!-- Categories -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+      <div class="card" style="padding:16px;cursor:pointer;">
+        <div style="font-size:30px;margin-bottom:7px;">🪪</div>
+        <div style="font-size:13.5px;font-weight:700;color:var(--t1);">IDs & NID</div>
+        <div style="font-size:11.5px;color:var(--t3);margin-top:3px;">3 documents</div>
+        <div class="tag tag-p" style="font-size:10px;margin-top:9px;">Encrypted</div>
+      </div>
+      <div class="card" style="padding:16px;cursor:pointer;">
+        <div style="font-size:30px;margin-bottom:7px;">🏥</div>
+        <div style="font-size:13.5px;font-weight:700;color:var(--t1);">Medical Records</div>
+        <div style="font-size:11.5px;color:var(--t3);margin-top:3px;">2 documents</div>
+        <div class="tag tag-rose" style="font-size:10px;margin-top:9px;">Private</div>
+      </div>
+      <div class="card" style="padding:16px;cursor:pointer;">
+        <div style="font-size:30px;margin-bottom:7px;">🏠</div>
+        <div style="font-size:13.5px;font-weight:700;color:var(--t1);">Property Docs</div>
+        <div style="font-size:11.5px;color:var(--t3);margin-top:3px;">1 document</div>
+        <div class="tag tag-gold" style="font-size:10px;margin-top:9px;">Family only</div>
+      </div>
+      <div class="card" style="padding:16px;cursor:pointer;">
+        <div style="font-size:30px;margin-bottom:7px;">🎓</div>
+        <div style="font-size:13.5px;font-weight:700;color:var(--t1);">Certificates</div>
+        <div style="font-size:11.5px;color:var(--t3);margin-top:3px;">1 document</div>
+        <div class="tag tag-teal" style="font-size:10px;margin-top:9px;">Shared</div>
+      </div>
+    </div>
+    <!-- Recent -->
+    <div class="sh"><div class="sh-title">Recent Documents</div></div>
+    <div class="card" style="overflow:hidden;">
+      <div class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--ps);">🪪</div>
+          <div><div class="set-title">Miraz_NID_2024.pdf</div><div class="set-sub">Added Mar 10 · Father</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+      <div class="set-row" style="border-bottom:none;">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--rose-s);">🏥</div>
+          <div><div class="set-title">Nasima_MedRecord.pdf</div><div class="set-sub">Added Feb 28 · Mother</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+    </div>
+    <div class="btn btn-p btn-full">+ Upload Document</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SHARED LISTS ═══ -->
+<div id="s-shared-lists" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;justify-content:space-between;">
+      <div class="back-btn" onclick="goTo('s-profile')">‹</div>
+      <span class="nav-title">Shared Lists</span>
+      <div class="btn btn-p" style="padding:9px 16px;min-height:36px;font-size:13px;">+ New</div>
+    </div>
+    <!-- Active grocery list -->
+    <div style="background:linear-gradient(135deg,var(--teal-s),#B2F0ED);border-radius:var(--r-lg);
+      padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;border:1px solid rgba(12,166,120,.2);">
+      <div style="font-size:30px;">🛒</div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:700;color:var(--t1);">Grocery List</div>
+        <div style="font-size:12px;color:var(--teal);margin-top:2px;font-weight:600;">8 items · Updated by Nasima · 30 min ago</div>
+      </div>
+      <div class="tag tag-teal">Active</div>
+    </div>
+    <!-- List items -->
+    <div class="card" style="padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--t2);margin-bottom:12px;letter-spacing:.3px;">ITEMS</div>
+      <div style="display:flex;flex-direction:column;gap:11px;">
+        <!-- Checked item -->
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div onclick="this.style.background=this.style.background.includes('teal')?'var(--bdr)':'linear-gradient(135deg,var(--teal),#14C98A)';this.innerHTML=this.innerHTML.includes('✓')?'':'✓';"
+            style="width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--teal),#14C98A);
+            display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;cursor:pointer;flex-shrink:0;">✓</div>
+          <div style="font-size:14px;color:var(--t3);text-decoration:line-through;flex:1;">Rice — 5 kg</div>
+          <div class="av av-rose" style="width:20px;height:20px;font-size:8px;">N</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:22px;height:22px;border-radius:7px;border:2px solid var(--bdr);cursor:pointer;flex-shrink:0;"></div>
+          <div style="font-size:14px;color:var(--t1);flex:1;">Lentils — 2 kg</div>
+          <div class="av av-teal" style="width:20px;height:20px;font-size:8px;">MM</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:22px;height:22px;border-radius:7px;border:2px solid var(--bdr);cursor:pointer;flex-shrink:0;"></div>
+          <div style="font-size:14px;color:var(--t1);flex:1;">Cooking oil — 1 litre</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div onclick="this.style.background=this.style.background.includes('teal')?'var(--bdr)':'linear-gradient(135deg,var(--teal),#14C98A)';this.innerHTML=this.innerHTML.includes('✓')?'':'✓';"
+            style="width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--teal),#14C98A);
+            display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;cursor:pointer;flex-shrink:0;">✓</div>
+          <div style="font-size:14px;color:var(--t3);text-decoration:line-through;flex:1;">Onion</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:22px;height:22px;border-radius:7px;border:2px solid var(--bdr);cursor:pointer;flex-shrink:0;"></div>
+          <div style="font-size:14px;color:var(--t1);flex:1;">Birthday cake 🎂</div>
+          <div class="av av-p" style="width:20px;height:20px;font-size:8px;">MO</div>
+        </div>
+        <!-- Add item -->
+        <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--surf2);
+          border-radius:var(--r-md);border:1.5px dashed var(--bdr);cursor:pointer;">
+          <div style="width:22px;height:22px;border-radius:7px;background:var(--p);display:flex;
+            align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0;">+</div>
+          <div style="font-size:14px;color:var(--p);font-weight:600;">Add item…</div>
+        </div>
+      </div>
+    </div>
+    <!-- Other lists -->
+    <div class="sh"><div class="sh-title">Other Lists</div></div>
+    <div class="card" style="overflow:hidden;">
+      <div class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--gold-s);">✈️</div>
+          <div><div class="set-title">Cox's Bazar Trip Packing</div><div class="set-sub">14 items · April 2026</div></div>
+        </div>
+        <div class="tag tag-gold" style="font-size:10px;">Upcoming</div>
+      </div>
+      <div class="set-row" style="border-bottom:none;">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--rose-s);">🎂</div>
+          <div><div class="set-title">Amma's Birthday Tasks</div><div class="set-sub">6 tasks · Mar 18</div></div>
+        </div>
+        <div class="tag tag-rose" style="font-size:10px;">3 days</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SETTINGS ═══ -->
+<div id="s-settings" class="screen" style="background:var(--bg);">
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"></div></div>
+  <div class="sc">
+    <div class="nav-bar" style="padding:0 0 4px;">
+      <div class="back-btn" onclick="goTo('s-profile')">‹</div>
+      <span class="nav-title">Settings</span>
+    </div>
+    <!-- Profile tile -->
+    <div style="background:linear-gradient(135deg,var(--p),var(--p2));border-radius:var(--r-lg);
+      padding:15px 16px;display:flex;align-items:center;gap:13px;cursor:pointer;margin-bottom:4px;">
+      <div class="av av-p" style="width:50px;height:50px;font-size:18px;border:2px solid rgba(255,255,255,.45);">MO</div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;color:#fff;">Mohini Sultana Mukta</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.68);margin-top:2px;">Edit profile →</div>
+      </div>
+    </div>
+    <!-- Privacy group -->
+    <div class="card" style="overflow:hidden;margin-bottom:4px;">
+      <div style="padding:10px 16px 6px;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1.2px;">PRIVACY</div>
+      <div class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--ps);">🔒</div>
+          <div><div class="set-title">Profile Visibility</div><div class="set-sub">Family members only</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--p);font-weight:600;">Family Only ›</div>
+      </div>
+      <div class="set-row" style="border-bottom:none;">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--teal-s);">📍</div>
+          <div><div class="set-title">Location Sharing</div><div class="set-sub">Share location when active</div></div>
+        </div>
+        <div class="toggle toggle-on" onclick="togSwitch(this)"><div class="toggle-dot"></div></div>
+      </div>
+    </div>
+    <!-- Notifications group -->
+    <div class="card" style="overflow:hidden;margin-bottom:4px;">
+      <div style="padding:10px 16px 6px;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1.2px;">NOTIFICATIONS</div>
+      <div class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--ps);">💬</div>
+          <div><div class="set-title">Messages</div></div>
+        </div>
+        <div class="toggle toggle-on" onclick="togSwitch(this)"><div class="toggle-dot"></div></div>
+      </div>
+      <div class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--rose-s);">🎂</div>
+          <div><div class="set-title">Birthday Reminders</div></div>
+        </div>
+        <div class="toggle toggle-on" onclick="togSwitch(this)"><div class="toggle-dot"></div></div>
+      </div>
+      <div class="set-row" style="border-bottom:none;">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--red-s);">🚨</div>
+          <div><div class="set-title">Emergency Alerts</div></div>
+        </div>
+        <div class="toggle toggle-on" onclick="togSwitch(this)" style="background:linear-gradient(135deg,var(--red),#F05252);"><div class="toggle-dot"></div></div>
+      </div>
+    </div>
+    <!-- Family group -->
+    <div class="card" style="overflow:hidden;margin-bottom:4px;">
+      <div style="padding:10px 16px 6px;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1.2px;">FAMILY</div>
+      <div onclick="goTo('s-family-tree')" class="set-row">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--teal-s);">🌳</div>
+          <div><div class="set-title">Manage Family Tree</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+      <div onclick="goTo('s-add-member')" class="set-row" style="border-bottom:none;">
+        <div class="set-row-l">
+          <div class="set-ico" style="background:var(--ps);">➕</div>
+          <div><div class="set-title">Invite New Member</div></div>
+        </div>
+        <div style="font-size:18px;color:var(--t3);">›</div>
+      </div>
+    </div>
+    <!-- Sign out -->
+    <div onclick="goTo('s-login')" style="background:var(--surf);border-radius:var(--r-lg);padding:15px 16px;
+      display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid var(--red-s);">
+      <div class="set-ico" style="background:var(--red-s);">🚪</div>
+      <div style="font-size:14px;font-weight:600;color:var(--red);">Sign Out</div>
+    </div>
+    <!-- Footer -->
+    <div style="text-align:center;padding:4px 0 8px;">
+      <div style="font-size:11px;color:var(--t3);">FamilyBook · Student Project</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:2px;">Mohini Sultana Mukta · 201-15-3183 · DIU</div>
+    </div>
+  </div>
+</div>
+
+    </div><!-- phone-screen end -->
+  </div><!-- phone-frame end -->
+
+  <!-- ═══ SCREEN NAVIGATOR ═══ -->
+  <div class="snav-panel">
+    <div class="snav-label">Screen Navigator — click any screen</div>
+    <div class="snav-scroll">
+      <!-- Auth flow -->
+      <span class="snav-chip active-snav" id="chip-s-splash" onclick="goTo('s-splash')">Splash</span>
+      <span class="snav-chip" id="chip-s-onboard1" onclick="goTo('s-onboard1')">Onboard 1</span>
+      <span class="snav-chip" id="chip-s-onboard2" onclick="goTo('s-onboard2')">Onboard 2</span>
+      <span class="snav-chip" id="chip-s-onboard3" onclick="goTo('s-onboard3')">Onboard 3</span>
+      <span class="snav-chip" id="chip-s-login" onclick="goTo('s-login')">Login</span>
+      <span class="snav-chip" id="chip-s-signup" onclick="goTo('s-signup')">Sign Up</span>
+      <span class="snav-chip" id="chip-s-create-family" onclick="goTo('s-create-family')">Create Family</span>
+      <div class="snav-group-sep"></div>
+      <!-- Main tabs -->
+      <span class="snav-chip" id="chip-s-home" onclick="goTo('s-home')">Home</span>
+      <span class="snav-chip" id="chip-s-family-tree" onclick="goTo('s-family-tree')">Family Tree</span>
+      <span class="snav-chip" id="chip-s-events" onclick="goTo('s-events')">Events</span>
+      <span class="snav-chip" id="chip-s-messages" onclick="goTo('s-messages')">Messages</span>
+      <span class="snav-chip" id="chip-s-profile" onclick="goTo('s-profile')">Profile</span>
+      <div class="snav-group-sep"></div>
+      <!-- Posts & Tree -->
+      <span class="snav-chip" id="chip-s-create-post" onclick="goTo('s-create-post')">Create Post</span>
+      <span class="snav-chip" id="chip-s-post-detail" onclick="goTo('s-post-detail')">Post Detail</span>
+      <span class="snav-chip" id="chip-s-add-member" onclick="goTo('s-add-member')">Add Member</span>
+      <span class="snav-chip" id="chip-s-member-profile" onclick="goTo('s-member-profile')">Member Profile</span>
+      <div class="snav-group-sep"></div>
+      <!-- Events -->
+      <span class="snav-chip" id="chip-s-create-event" onclick="goTo('s-create-event')">Create Event</span>
+      <span class="snav-chip" id="chip-s-event-detail" onclick="goTo('s-event-detail')">Event Detail</span>
+      <span class="snav-chip" id="chip-s-chat" onclick="goTo('s-chat')">Chat</span>
+      <div class="snav-group-sep"></div>
+      <!-- Memories -->
+      <span class="snav-chip" id="chip-s-memories" onclick="goTo('s-memories')">Memories</span>
+      <span class="snav-chip" id="chip-s-album" onclick="goTo('s-album')">Album</span>
+      <div class="snav-group-sep"></div>
+      <!-- Utility screens -->
+      <span class="snav-chip" id="chip-s-emergency" onclick="goTo('s-emergency')">Emergency</span>
+      <span class="snav-chip" id="chip-s-doc-vault" onclick="goTo('s-doc-vault')">Doc Vault</span>
+      <span class="snav-chip" id="chip-s-shared-lists" onclick="goTo('s-shared-lists')">Shared Lists</span>
+      <span class="snav-chip" id="chip-s-settings" onclick="goTo('s-settings')">Settings</span>
+    </div>
+  </div>
+
+</div><!-- outer end -->
+
+<script>
+let current = 's-splash';
+
+function goTo(id) {
+  // Deactivate current screen
+  const prevEl = document.getElementById(current);
+  if (prevEl) prevEl.classList.remove('active');
+  // Deactivate current chip
+  const prevChip = document.getElementById('chip-' + current);
+  if (prevChip) prevChip.classList.remove('active-snav');
+
+  current = id;
+
+  // Activate new screen
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('active'); el.scrollTop = 0; }
+  // Activate new chip + scroll into view
+  const chip = document.getElementById('chip-' + id);
+  if (chip) {
+    chip.classList.add('active-snav');
+    chip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+}
+
+function selChip(el) {
+  // Find parent container and deselect siblings
+  const parent = el.parentElement;
+  parent.querySelectorAll('.role-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function togSwitch(el) {
+  el.classList.toggle('toggle-on');
+  el.classList.toggle('toggle-off');
+}
+
+function sendSOS() {
+  const btn = document.querySelector('#s-emergency [onclick="sendSOS()"]');
+  if (!btn) return;
+  const orig = btn.innerHTML;
+  const origBg = btn.style.background;
+  btn.innerHTML = '<div style="font-size:30px;">✅</div><div style="font-size:11px;font-weight:800;color:#fff;letter-spacing:1.5px;">SENT!</div>';
+  btn.style.background = 'linear-gradient(135deg,var(--teal),#14C98A)';
+  btn.style.boxShadow = '0 8px 32px rgba(12,166,120,.4)';
+  setTimeout(() => {
+    btn.innerHTML = orig;
+    btn.style.background = origBg || '';
+    btn.style.boxShadow = '0 8px 32px rgba(224,49,49,.45)';
+  }, 2500);
+}
+
+// Auto-advance splash after 3s
+setTimeout(() => { if (current === 's-splash') goTo('s-onboard1'); }, 3000);
+</script>
+</body>
+</html>
